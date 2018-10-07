@@ -13,13 +13,17 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Market Data API
 const data = require('./controllers/data.controller.js');
-// serve API
 app.get('/price_full', data.price_full);
 app.get('/price', data.price);
 app.get('/histoday', data.history_day);
 app.get('/histohour', data.history_hour);
 app.get('/histominute', data.history_minute);
+
+// Eth API
+const eth = require('./controllers/eth.controller.js');
+app.get('/get_tokens', eth.get_tokens);
 
 // Welcome page
 app.get('/', function(req, res) {
