@@ -15,6 +15,7 @@
     "cryptocompare": "^0.5.0",
     "dotenv": "^6.0.0",
     "ejs": "^2.6.1",
+    "etherscan-api": "^8.1.5",
     "ethplorer-js": "0.0.7",
     "express": "^4.16.3",
     "mongoose": "^5.2.16",
