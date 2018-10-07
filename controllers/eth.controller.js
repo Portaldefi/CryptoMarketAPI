@@ -28,11 +28,14 @@ exports.get_tokens = (req, res) => {
                     async.each(tokens, function(token, callback) {
                         counter++;
                         var tokeninfo = token.tokenInfo;
+                        var symbol = tokeninfo.symbol;
                         var contract = tokeninfo.address;
                         var price = tokeninfo.price;
+                    
                         if (price){
                             var tx = findTx(tokentxs, contract)
-                            var obj = {info:tokeninfo, transactions:tx}
+                            var icon = "https://chasing-coins.com/api/v1/std/logo/"+symbol;
+                            var obj = {info:tokeninfo, transactions:tx, icon:icon}
                             info.push(obj);
                         }
                         if (counter==tokens.length){
@@ -53,27 +56,6 @@ exports.get_tokens = (req, res) => {
         })
     }
 };
-
-function sanitizedtokenInfo(json, address){
-    var tokens = json.tokens;
-    var info = [];
-    var txs = etherscan.account.tokentx(address);
-    txs.then(function(data){
-        var tokentxs = data.result;
-        for (var i=0; i<tokens.length; i++){
-            var token = tokens[i];
-            var tokeninfo = token.tokenInfo;
-            var contract = tokeninfo.address;
-            var price = tokeninfo.price;
-            if (price){
-                var tx = findTx(tokentxs, contract);
-                var obj = {info:tokeninfo, transactions:tx}
-                info.push(obj);
-            }
-        }
-    });
-    return info
-}
 
 function findTx(list, address){
     var txs =[];
