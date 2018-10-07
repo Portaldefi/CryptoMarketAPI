@@ -21,6 +21,7 @@ app.get('/histoday', data.history_day);
 app.get('/histohour', data.history_hour);
 app.get('/histominute', data.history_minute);
 
+// Welcome page
 app.get('/', function(req, res) {
     res.render('index');
 });
