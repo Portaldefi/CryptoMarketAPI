@@ -67,7 +67,7 @@ exports.history_day = (req, res) => {
                 }).catch((error) => {
                     callback(error)
                 });
-            }, 200); 
+            }, 100); 
           }, function(err) {
             if(err) {
               console.log('A element failed to process', err)
@@ -109,7 +109,7 @@ exports.history_hour = (req, res) => {
                 }).catch((error) => {
                     callback(error)
                 });
-            }, 200); 
+            }, 100); 
           }, function(err) {
             if(err) {
               console.log('A element failed to process', err)
@@ -151,7 +151,7 @@ exports.history_minute = (req, res) => {
                 }).catch((error) => {
                     callback(error)
                 });
-            }, 200); 
+            }, 100); 
           }, function(err) {
             if(err) {
               console.log('A element failed to process', err)
