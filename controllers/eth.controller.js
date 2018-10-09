@@ -68,7 +68,7 @@ function findTx(list, address, decimals){
         if (cont == address){
             var tx = list[l];
             var accnt = parseFloat(tx.value)/decimals;
-            var obj = {hash:tx.hash, from:tx.from, to:tx.to, contract:tx.contractAddress, timestamp:tx.timestamp, 
+            var obj = {hash:tx.hash, from:tx.from, to:tx.to, contract:tx.contractAddress, timestamp:tx.timeStamp, 
             value:accnt};
             txs.push(obj);
         }
