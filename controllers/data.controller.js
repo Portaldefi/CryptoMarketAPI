@@ -66,14 +66,12 @@ exports.history_day = (req, res) => {
             { $group : { _id : '$fsym',  data: { $push: "$price" } } }
             ],
             function(err,results) {
-                var json = [];
+                var json = {};
                 for (var i=0;i<results.length;i++){
                     var obj = results[i];
                     var sym = obj._id;
                     var dt = obj.data;
-                    var info = {};
-                    info[sym] = dt;
-                    json.push(info)
+                    json[sym] = dt;
                 }
                 res.send(JSON.stringify(json));
             }
@@ -96,7 +94,7 @@ exports.history_hour = (req, res) => {
         var tsym = req.query.tsym;
         var limit = req.query.limit;
         if (limit<1) {
-            limit = 30
+            limit = 24
         }
         var st = moment().utc().subtract(limit,'hours').startOf('hour').unix('X')
 
@@ -107,14 +105,12 @@ exports.history_hour = (req, res) => {
             { $group : { _id : '$fsym',  data: { $push: "$price" } } }
             ],
             function(err,results) {
-                var json = [];
+                var json = {};
                 for (var i=0;i<results.length;i++){
                     var obj = results[i];
                     var sym = obj._id;
                     var dt = obj.data;
-                    var info = {};
-                    info[sym] = dt;
-                    json.push(info)
+                    json[sym] = dt;
                 }
                 res.send(JSON.stringify(json));
             }
