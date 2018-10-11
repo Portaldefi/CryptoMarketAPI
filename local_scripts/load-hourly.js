@@ -23,14 +23,14 @@ Coin.find({}, function(err, coins) {
         asyncLoop(coins, function (item, next)
         {
             var fsym = item.symbol;
-            addData(fsym, function() {
-                console.log('added '+fsym);
-                next();
-            });
-            // findandUpdate(fsym, function() {
+            // addData(fsym, function() {
             //     console.log('added '+fsym);
             //     next();
             // });
+            findandUpdate(fsym, function() {
+                console.log('added '+fsym);
+                next();
+            });
         }, function (err)
         {
             if (err)
@@ -64,31 +64,34 @@ function addData(fsym,callback){
 }
 
 function findandUpdate(fsym, callback){
-        cc.histoDay(fsym,'USD',{limit:1})
+        cc.histoHour(fsym,'USD',{limit:1})
         .then(data => {
             
             asyncLoop(data, function (item, next)
             {
+
                 Hourly.update(
                     {fsym:fsym},
                     { '$addToSet': { price: item } },
+                    { upsert: true } ,
                         function(err, model) {
                             console.log(err);
                             next();
                         }
-                    );
+                );
+
             }, function (err)
             {
                 if (err)
                 {
                     console.error('Error: ' + err.message);
-                    return;
                 }
                 console.log('Finished!');
                 callback();
             });
 
         }).catch((error) => {
-            console.log(error.message);
+            console.log(error);
+            callback();
         });     
 }
