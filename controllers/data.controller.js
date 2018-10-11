@@ -1,5 +1,6 @@
 const cc = require('cryptocompare')
 const async = require('async')
+var moment = require('moment');
 
 exports.price_full = (req, res) => {
     // Validate request
@@ -39,128 +40,86 @@ exports.price = (req, res) => {
     }
 };
 
+var Daily = require('../models/Daily');
+
 exports.history_day = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+
     // Validate request
     if(!req.query) {
         return res.status(400).send({
             message: "Parameters can not be empty"
         });
     } else {
-        var fsyms = req.query.fsyms.split(",");
+        var fsyms = req.query.fsyms.toUpperCase().split(",");
         var tsym = req.query.tsym;
         var limit = req.query.limit;
-        var data = [];
-        res.setHeader('Content-Type', 'application/json');
-        var counter = 0;
-        async.each(fsyms, function(item, callback) {
-            counter++;
-            console.log('Processing ' + item)
-            setTimeout(function(){
-                cc.histoDay(item,tsym,{limit:limit})
-                .then(prices => {
-                    var obj = {};
-                    obj[item] = prices;
-                    data.push(obj);
-                    if (counter==fsyms.length){
-                        callback(null)
-                    }
-                }).catch((error) => {
-                    callback(error)
-                });
-            }, 100); 
-          }, function(err) {
-            if(err) {
-              console.log('A element failed to process', err)
-              res.status(500).json(err)
-            } else {
-              console.log('All elements have been processed successfully')
-              res.status(200).json(data) 
+        if (limit<1) {
+            limit = 30
+        }
+        var st = moment().utc().subtract(limit,'days').startOf('day').unix('X')
+
+        Daily.aggregate([
+            {$match: {fsym: { $in: fsyms }}},
+            {$unwind: "$price"},
+            {'$match' : {'price.time': {'$gte': st }}},
+            { $group : { _id : '$fsym',  data: { $push: "$price" } } }
+            ],
+            function(err,results) {
+                var json = [];
+                for (var i=0;i<results.length;i++){
+                    var obj = results[i];
+                    var sym = obj._id;
+                    var dt = obj.data;
+                    var info = {};
+                    info[sym] = dt;
+                    json.push(info)
+                }
+                res.send(JSON.stringify(json));
             }
-          })
+          )
 
     }
 };
+
+var Hourly = require('../models/Hourly');
 
 exports.history_hour = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
     // Validate request
     if(!req.query) {
         return res.status(400).send({
             message: "Parameters can not be empty"
         });
     } else {
-        var fsyms = req.query.fsyms.split(",");
+        var fsyms = req.query.fsyms.toUpperCase().split(",");
         var tsym = req.query.tsym;
         var limit = req.query.limit;
-        var data = [];
-        res.setHeader('Content-Type', 'application/json');
-        var counter = 0;
-        async.each(fsyms, function(item, callback) {
-            counter++;
-            console.log('Processing ' + item)
-            setTimeout(function(){
-                cc.histoHour(item,tsym,{limit:limit})
-                .then(prices => {
-                    var obj = {};
-                    obj[item] = prices;
-                    data.push(obj);
-                    if (counter==fsyms.length){
-                        callback(null)
-                    }
-                }).catch((error) => {
-                    callback(error)
-                });
-            }, 100); 
-          }, function(err) {
-            if(err) {
-              console.log('A element failed to process', err)
-              res.status(500).json(err)
-            } else {
-              console.log('All elements have been processed successfully')
-              res.status(200).json(data) 
+        if (limit<1) {
+            limit = 30
+        }
+        var st = moment().utc().subtract(limit,'hours').startOf('hour').unix('X')
+
+        Hourly.aggregate([
+            {$match: {fsym: { $in: fsyms }}},
+            {$unwind: "$price"},
+            {'$match' : {'price.time': {'$gte': st }}},
+            { $group : { _id : '$fsym',  data: { $push: "$price" } } }
+            ],
+            function(err,results) {
+                var json = [];
+                for (var i=0;i<results.length;i++){
+                    var obj = results[i];
+                    var sym = obj._id;
+                    var dt = obj.data;
+                    var info = {};
+                    info[sym] = dt;
+                    json.push(info)
+                }
+                res.send(JSON.stringify(json));
             }
-          })
+          )
 
     }
 };
 
-exports.history_minute = (req, res) => {
-    // Validate request
-    if(!req.query) {
-        return res.status(400).send({
-            message: "Parameters can not be empty"
-        });
-    } else {
-        var fsyms = req.query.fsyms.split(",");
-        var tsym = req.query.tsym;
-        var limit = req.query.limit;
-        var data = [];
-        res.setHeader('Content-Type', 'application/json');
-        var counter = 0;
-        async.each(fsyms, function(item, callback) {
-            counter++;
-            console.log('Processing ' + item)
-            setTimeout(function(){
-                cc.histoMinute(item,tsym,{limit:limit})
-                .then(prices => {
-                    var obj = {};
-                    obj[item] = prices;
-                    data.push(obj);
-                    if (counter==fsyms.length){
-                        callback(null)
-                    }
-                }).catch((error) => {
-                    callback(error)
-                });
-            }, 100); 
-          }, function(err) {
-            if(err) {
-              console.log('A element failed to process', err)
-              res.status(500).json(err)
-            } else {
-              console.log('All elements have been processed successfully')
-              res.status(200).json(data) 
-            }
-          })
-
-    }
-};
