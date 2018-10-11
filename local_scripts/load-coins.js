@@ -42,7 +42,6 @@ cc.coinList()
   async.each(coins, function(item, callback) {
     setTimeout(function(){
       var url = "https://www.cryptocompare.com"+item.icon;
-
       var cobj = {id:item.id, name:item.name, symbol:item.symbol, icon:url};
       var co = new Coin(cobj);
       co.save(function (err) {
