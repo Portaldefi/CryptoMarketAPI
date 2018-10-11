@@ -119,3 +119,42 @@ exports.history_hour = (req, res) => {
     }
 };
 
+
+var Minutely = require('../models/Minutely');
+
+exports.history_minute = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    // Validate request
+    if(!req.query) {
+        return res.status(400).send({
+            message: "Parameters can not be empty"
+        });
+    } else {
+        var fsyms = req.query.fsyms.toUpperCase().split(",");
+        var tsym = req.query.tsym;
+        var limit = req.query.limit;
+        if (limit<1) {
+            limit = 60
+        }
+        var st = moment().utc().subtract(limit,'minute').startOf('minute').unix('X')
+
+        Minutely.aggregate([
+            {$match: {fsym: { $in: fsyms }}},
+            {$unwind: "$price"},
+            {'$match' : {'price.time': {'$gte': st }}},
+            { $group : { _id : '$fsym',  data: { $push: "$price" } } }
+            ],
+            function(err,results) {
+                var json = {};
+                for (var i=0;i<results.length;i++){
+                    var obj = results[i];
+                    var sym = obj._id;
+                    var dt = obj.data;
+                    json[sym] = dt;
+                }
+                res.send(JSON.stringify(json));
+            }
+        )
+
+    }
+};

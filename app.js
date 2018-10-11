@@ -19,6 +19,8 @@ app.get('/price_full', data.price_full);
 app.get('/price', data.price);
 app.get('/histoday', data.history_day);
 app.get('/histohour', data.history_hour);
+app.get('/histominute', data.history_minute);
+
 
 // Eth API
 const eth = require('./controllers/eth.controller.js');
