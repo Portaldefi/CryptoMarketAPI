@@ -136,25 +136,17 @@ exports.history_minute = (req, res) => {
         if (limit<1) {
             limit = 60
         }
-        var st = moment().utc().subtract(limit,'minute').startOf('minute').unix('X')
 
-        Minutely.aggregate([
-            {$match: {fsym: { $in: fsyms }}},
-            {$unwind: "$price"},
-            {'$match' : {'price.time': {'$gte': st }}},
-            { $group : { _id : '$fsym',  data: { $push: "$price" } } }
-            ],
-            function(err,results) {
-                var json = {};
-                for (var i=0;i<results.length;i++){
-                    var obj = results[i];
-                    var sym = obj._id;
-                    var dt = obj.data;
-                    json[sym] = dt;
-                }
-                res.send(JSON.stringify(json));
+        Minutely.find({fsym:{$in:fsyms}},{'price':{'$slice':-1*limit}}, function(err, results){
+            var json = {};
+            for (var i=0;i<results.length;i++){
+                var obj = results[i];
+                var sym = obj.fsym;
+                var dt = obj.price;
+                json[sym] = dt;
             }
-        )
+            res.send(JSON.stringify(json));
+        })
 
     }
 };
