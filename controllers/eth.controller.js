@@ -26,7 +26,6 @@ exports.get_tokens = (req, res) => {
                 var tx = etherscan.account.tokentx(address);
                 tx.then(function(result){
                     var tokentxs = result.result;
-                    var counter = 0;
                     var fsyms = [];
                     for (var j=0;j<tokens.length;j++){
                         fsyms.push(tokens[j].tokenInfo.symbol)
@@ -50,7 +49,7 @@ exports.get_tokens = (req, res) => {
                                     var accnt = balance/Math.pow(10, parseFloat(decimals));    
                                     var tx = findTx(tokentxs, contract, Math.pow(10, parseFloat(decimals)));
                                     var icon = coin.icon;
-                                    var obj = {symbol:symbol, name:name, address:contract, icon:icon, balance:accnt, transactions:tx}
+                                    var obj = {symbol:symbol, name:name, address:contract, icon:icon, balance:accnt, decimals:decimals, transactions:tx}
                                     info.push(obj);
                                 }
                                 next();
