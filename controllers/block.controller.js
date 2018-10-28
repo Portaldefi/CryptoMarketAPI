@@ -1,5 +1,5 @@
 
-var ACCESS_TOKEN = "ce49c75072484649bbd27d94a7c9d4a3";
+const axios = require('axios');
 
 exports.submit_tx = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -12,15 +12,29 @@ exports.submit_tx = (req, res) => {
         var coin = req.query.coin; 
         var tx_hex = req.query.tx_hex; 
 
-        bcypher = require('blockcypher');
-        var bcapi = new bcypher(coin,chain,ACCESS_TOKEN);
-        bcapi.pushTX(tx_hex, {}, function(err, data) {
-            if (err !== null) {
-              res.status(500).json(err)
+        var url = "https://insight.bitpay.com/api"
+        if (coin == "btc"){
+            if (chain =="test"){
+                url = "https://test-insight.bitpay.com/api"
             } else {
-              res.status(200).json(data)
+                url = "https://insight.bitpay.com/api"
             }
-        }); 
+        } else if (coin == "bch"){
+            if (chain == "test"){
+                url = "https://test-bch-insight.bitpay.com/api"
+            } else {
+                url = "https://bch-insight.bitpay.com/api"   
+            }
+        }
+        
+        axios.get(url+'/tx/send/'+tx_hex)
+        .then(function (response) {
+            res.status(200).json(response.data)
+        })
+        .catch(function (error) {
+            res.status(500).json(error.data)
+        });
+ 
     }
 };
 
@@ -35,14 +49,36 @@ exports.address = (req, res) => {
         var coin = req.query.coin; 
         var add = req.query.address; 
 
-        bcypher = require('blockcypher');
-        var bcapi = new bcypher(coin,chain,ACCESS_TOKEN);
-        bcapi.getAddr(add,{}, function(err, data) {
-            if (err !== null) {
-              res.status(500).json(err)
+        var url = "https://insight.bitpay.com/api"
+        if (coin == "btc"){
+            if (chain =="test"){
+                url = "https://test-insight.bitpay.com/api"
             } else {
-              res.status(200).json(data)
+                url = "https://insight.bitpay.com/api"
             }
+        } else if (coin == "bch"){
+            if (chain == "test"){
+                url = "https://test-bch-insight.bitpay.com/api"
+            } else {
+                url = "https://bch-insight.bitpay.com/api"   
+            }
+        }
+        axios.get(url+'/txs/?address='+add)
+        .then(function (response) {
+          var txs = response.data
+          
+          axios.get(url+'/addr/'+add+'?noTxList=1')
+          .then(function (response) {
+            var balance = response.data   
+            res.status(200).json({balance:balance, txs:txs})
+          })
+          .catch(function (error) {
+            res.status(500).json(error.data)
+          }); 
+
+        })
+        .catch(function (error) {
+          res.status(500).json(error.data)
         }); 
     }
 };
