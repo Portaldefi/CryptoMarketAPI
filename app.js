@@ -26,6 +26,11 @@ app.get('/histominute', data.history_minute);
 const eth = require('./controllers/eth.controller.js');
 app.get('/get_tokens', eth.get_tokens);
 
+// Block API
+const block = require('./controllers/block.controller.js');
+app.get('/submit_tx', block.submit_tx);
+app.get('/address', block.address);
+
 // Welcome page
 app.get('/', function(req, res) {
     res.render('index');
