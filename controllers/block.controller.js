@@ -35,7 +35,7 @@ exports.submit_tx = (req, res) => {
         })
         .catch(function (error) {
             console.log(error)
-            res.status(500).json(error.response)
+            res.status(500).json(error.response.data)
         });
  
     }
