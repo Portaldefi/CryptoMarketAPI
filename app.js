@@ -32,6 +32,10 @@ app.get('/submit_tx', block.submit_tx);
 app.get('/address', block.address);
 app.get('/utxo', block.utxo);
 
+// Alerts API
+const alert = require('./controllers/alert.controller.js');
+app.post('/create_alert', alert.create);
+app.post('/delete_alert', alert.delete);
 
 // Welcome page
 app.get('/', function(req, res) {

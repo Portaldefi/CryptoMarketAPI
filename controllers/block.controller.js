@@ -31,7 +31,11 @@ exports.submit_tx = (req, res) => {
             rawtx: tx_hex
         })
         .then(function (response) {
-            res.status(200).json(response.data)
+            var resp = response.data;
+            if ('result' in resp.txid){
+                resp = {txid:resp.txid.result};
+            }
+            res.status(200).json(resp)
         })
         .catch(function (error) {
             console.log(error)
@@ -69,7 +73,6 @@ exports.address = (req, res) => {
         axios.get(url+'/txs/?address='+add)
         .then(function (response) {
           var txs = response.data
-          
           axios.get(url+'/addr/'+add+'?noTxList=1')
           .then(function (response) {
             var balance = response.data   
@@ -80,7 +83,14 @@ exports.address = (req, res) => {
           }); 
         })
         .catch(function (error) {
-          res.status(500).json(error.data)
+            axios.get(url+'/addr/'+add+'?noTxList=1')
+            .then(function (response) {
+              var balance = response.data   
+              res.status(200).json({balance:balance, txs:txs})
+            })
+            .catch(function (error) {
+              res.status(500).json(error.data)
+            });
         }); 
     }
 };
