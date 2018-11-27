@@ -37,6 +37,18 @@ const alert = require('./controllers/alert.controller.js');
 app.post('/create_alert', alert.create);
 app.post('/delete_alert', alert.delete);
 
+// Exchange API
+const ex = require('./controllers/exchange.controller.js');
+app.get('/exchange/list', ex.list);
+app.get('/exchange/load_markets', ex.load_markets);
+
+app.get('/exchange/get_balance', ex.get_balance);
+app.get('/exchange/get_orders', ex.get_orders);
+
+
+app.get('/exchange/load_pair', ex.load_pair);
+
+
 // Welcome page
 app.get('/', function(req, res) {
     res.render('index');
