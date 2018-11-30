@@ -27,7 +27,5 @@
     "node-async-loop": "^1.2.2",
     "node-fetch": "^2.2.0"
   },
-  "devDependencies": {
-    "nodemon": "^1.18.4"
-  }
+  "devDependencies": {}
 }
