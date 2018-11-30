@@ -3,7 +3,7 @@ var ccxt = require ('ccxt');
 exports.list = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     var list = [{exchange:"Binance", id:"binance", icon:"https://cryptomarket-api.herokuapp.com/images/binance.png"},
-                {exchange:"Kraken", id:"kraken", icon:"https://cryptomarket-api.herokuapp.com/images/kraken.png"},
+                {exchange:"Kraken", id:"kraken", icon:"https://cryptomarket-api.herokuapp.com/images/Kraken.png"},
                 {exchange:"Bittrex", id:"bittrex", icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png"}];
     res.status(200).json(list);
 }
