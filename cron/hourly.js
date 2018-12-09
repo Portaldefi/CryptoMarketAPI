@@ -15,9 +15,11 @@ mongoose.connection
 global.fetch = require('node-fetch');
 const cc = require('cryptocompare');
 var asyncLoop = require('node-async-loop');
+var moment = require('moment');
 
 var Hourly = require('../models/Hourly');
 var Coin = require('../models/Coin');
+var limit_time = moment().utc().subtract(1,'days').unix('X');
 
 Coin.find({}, function(err, coins) {
   if (err) throw err;
@@ -43,13 +45,23 @@ Coin.find({}, function(err, coins) {
 function findandUpdate(fsym, callback){
         cc.histoHour(fsym,'USD',{limit:1})
         .then(data => {
+
+            Hourly.update(
+                {fsym:fsym},
+                { $pull: { price: { time: { $lt: limit_time} }  } },
+                { multi: true},
+                function(err) {
+                    console.log(err);
+                   // next();
+                }
+            );
             
             asyncLoop(data, function (item, next)
             {
-                Hourly.update(
+                Hourly.updateMany(
                     {fsym:fsym},
                     { '$addToSet': { price: item } },
-                        function(err, model) {
+                        function(err) {
                             console.log(err);
                             next();
                         }

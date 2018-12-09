@@ -14,23 +14,25 @@ mongoose.connection
 global.fetch = require('node-fetch');
 const cc = require('cryptocompare');
 var asyncLoop = require('node-async-loop');
+var moment = require('moment');
 
 var Minutely = require('../models/Minutely');
 var Coin = require('../models/Coin');
+var limit_time = moment().utc().subtract(120,'minutes').unix('X');
 
 Coin.find({}, function(err, coins) {
   if (err) throw err;
         asyncLoop(coins, function (item, next)
         {
             var fsym = item.symbol;
-            addData(fsym, function() {
-                console.log('added '+fsym);
-                next();
-            });
-            // findandUpdate(fsym, function() {
+            // addData(fsym, function() {
             //     console.log('added '+fsym);
             //     next();
             // });
+            findandUpdate(fsym, function() {
+                console.log('added '+fsym);
+                next();
+            });
         }, function (err)
         {
             if (err)
@@ -67,17 +69,26 @@ function findandUpdate(fsym, callback){
         cc.histoMinute(fsym,'USD',{limit:1})
         .then(data => {
             
+            Minutely.update(
+                {fsym:fsym},
+                { $pull: { price: { time: { $lt: limit_time} }  } },
+                { multi: true},
+                function(err) {
+                    console.log(err);
+                   // next();
+                }
+            );
+
             asyncLoop(data, function (item, next)
             {
-
-                Minutely.update(
+                Minutely.updateMany(
                     {fsym:fsym},
                     { '$addToSet': { price: item } },
-                    { upsert: true } ,
-                        function(err, model) {
-                            console.log(err);
-                            next();
-                        }
+                    { multi: true , upsert:true},
+                    function(err) {
+                        console.log(err);
+                        next();
+                    }
                 );
 
             }, function (err)
