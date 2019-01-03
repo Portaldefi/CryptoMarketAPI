@@ -40,14 +40,13 @@ app.post('/delete_alert', alert.delete);
 // Exchange API
 const ex = require('./controllers/exchange.controller.js');
 app.get('/exchange/list', ex.list);
-app.get('/exchange/load_markets', ex.load_markets);
-
+app.get('/exchange/pairs', ex.pairs);
 app.get('/exchange/get_balance', ex.get_balance);
 app.get('/exchange/get_orders', ex.get_orders);
-
-
-app.get('/exchange/load_pair', ex.load_pair);
-
+app.get('/exchange/place_order', ex.place_order);
+app.get('/exchange/cancel_order', ex.cancel_order);
+app.get('/exchange/withdraw', ex.withdraw);
+app.get('/exchange/deposit', ex.deposit);
 
 // Welcome page
 app.get('/', function(req, res) {
