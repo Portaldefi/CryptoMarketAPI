@@ -4,7 +4,10 @@ exports.list = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     var list = [{exchange:"Binance", id:"binance", icon:"https://cryptomarket-api.herokuapp.com/images/binance.png"},
                  {exchange:"Kraken", id:"kraken", icon:"https://cryptomarket-api.herokuapp.com/images/Kraken.png"},
-                {exchange:"Bittrex", id:"bittrex", icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png"}];
+                {exchange:"Bittrex", id:"bittrex", icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png"},
+                {exchange:"Huobi", id:"huobi", icon:"https://cryptomarket-api.herokuapp.com/images/huobi.png"},
+                {exchange:"Coinbase Pro", id:"gdax", icon:"https://cryptomarket-api.herokuapp.com/images/gdax.png"}
+            ];
     res.status(200).json(list);
 }
 
@@ -237,6 +240,25 @@ exports.depth = (req, res) => {
         (async () => {
             let exchange = new ccxt[ex] ();
             let depth = exchange.fetchOrderBook (sym);
+            res.status(200).json(depth);
+
+        }) ()
+    }
+}
+
+exports.ticker = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    if(!req.query) {
+        return res.status(400).send({
+            message: "Parameters can not be empty"
+        });
+    } else {
+        var sym = req.query.sym;
+        var ex = req.query.ex;
+
+        (async () => {
+            let exchange = new ccxt[ex] ();
+            let depth = exchange.fetchTicker (sym);
             res.status(200).json(depth);
 
         }) ()

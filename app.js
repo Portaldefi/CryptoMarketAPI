@@ -49,6 +49,7 @@ app.get('/exchange/withdraw', ex.withdraw);
 app.get('/exchange/deposit', ex.deposit);
 app.get('/exchange/ohlcv', ex.ohlcv);
 app.get('/exchange/depth', ex.depth);
+app.get('/exchange/ticker', ex.ticker);
 
 
 // Welcome page
