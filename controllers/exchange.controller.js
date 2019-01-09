@@ -203,3 +203,42 @@ exports.withdraw = (req, res) => {
         }) ()
     }
 }
+
+exports.ohlcv = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    if(!req.query) {
+        return res.status(400).send({
+            message: "Parameters can not be empty"
+        });
+    } else {
+
+        var sym = req.query.sym;
+        var ex = req.query.ex;
+        var interval = req.query.interval;
+
+        (async () => {
+            let exchange = new ccxt[ex] ();
+            let ohlcv = await exchange.fetchOHLCV (sym, interval)
+            res.status(200).json(ohlcv);
+        }) ()
+    }
+}
+
+exports.depth = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    if(!req.query) {
+        return res.status(400).send({
+            message: "Parameters can not be empty"
+        });
+    } else {
+        var sym = req.query.sym;
+        var ex = req.query.ex;
+
+        (async () => {
+            let exchange = new ccxt[ex] ();
+            let depth = exchange.fetchOrderBook (sym);
+            res.status(200).json(depth);
+
+        }) ()
+    }
+}

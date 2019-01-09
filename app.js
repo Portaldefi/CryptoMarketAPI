@@ -47,6 +47,9 @@ app.get('/exchange/place_order', ex.place_order);
 app.get('/exchange/cancel_order', ex.cancel_order);
 app.get('/exchange/withdraw', ex.withdraw);
 app.get('/exchange/deposit', ex.deposit);
+app.get('/exchange/ohlcv', ex.ohlcv);
+app.get('/exchange/depth', ex.depth);
+
 
 // Welcome page
 app.get('/', function(req, res) {
