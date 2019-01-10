@@ -27,6 +27,6 @@ io.attach(server, {
 require("./ws.js")(io);
 exports.io = io;
 
-const server = app.listen(process.env.PORT || 3000, () => {
+server.listen(process.env.PORT || 3000, () => {
     console.log(`Express is running on port ${server.address().port}`);
 });
