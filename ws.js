@@ -1,5 +1,6 @@
 module.exports = function(io){
     const ccxws = require("ccxws");
+    const ccxt = require("ccxt");
 
     io.on("connection", (client)=>{
         console.log("Connection from client: " + client.handshake.address);
@@ -8,45 +9,29 @@ module.exports = function(io){
         var type = client.handshake.query.type;
         var symbol = client.handshake.query.symbol;
 
-        const exchng = new ccxws.Binance();
+        const exchng = new ccxws.binance();
 
-        if (exchange=="binance"){
-            exchng = new ccxws.Binance();
-        } else if (type=="gdax"){
-            exchng = new ccxws.GDAX();
-        } else if (type=="bittrex"){
-            exchng = new ccxws.Bittrex();
-        } else if (type=="huobi"){
-            exchng = new ccxws.Huobi();
+        const exchange_ccxt = new ccxt[type] ();
+        let symbolId = exchange_ccxt.market(symbol); 
+
+        if (type=="gdax"){
+            exchng = new ccxws.coinbasepro();
+        } else {
+            exchng = new ccxws[exchange]();
         }
 
         if (type=="depth"){
-            exchng.on("ticker", trade => function (){
-                if (trade.fullId == symbol){
-                    client.emit(trade);
-                }
-            });
+            exchng.on("ticker", trade => client.emit(trade));
+            exchng.subscribeTicker(symbolId);
         } else if (type=="ticker"){
-            exchng.on("l2snapshot", trade => function (){
-                if (trade.fullId == symbol){
-                    client.emit(trade);
-                }
-            });
-            exchng.on("l2update", trade => function (){
-                if (trade.fullId == symbol){
-                    client.emit(trade);
-                }
-            });
-            exchng.on("l3snapshot", trade => function (){
-                if (trade.fullId == symbol){
-                    client.emit(trade);
-                }
-            });
-            exchng.on("l3update", trade => function (){
-                if (trade.fullId == symbol){
-                    client.emit(trade);
-                }
-            });
+            exchng.on("l2snapshot", trade => client.emit(trade));
+            exchng.on("l2update", trade => client.emit(trade));
+            exchng.on("l3snapshot", trade => client.emit(trade));
+            exchng.on("l3update", trade => client.emit(trade));
+            exchng.subscribeLevel2Snapshots(symbolId);
+            exchng.subscribeLevel2Updates(symbolId);
+            exchng.subscribeLevel3Snapshots(symbolId);
+            exchng.subscribeLevel3Updates(symbolId);
         } else {
             return
         }
