@@ -126,6 +126,5 @@ parameters:
 ERC20 tokens API
 =====================================================
 
-Get Tokens
-
-Find Tx
+Get ERC20 Tokens
+url:/get_tokens?address=0xdfgfgddhgh546546hgdd
