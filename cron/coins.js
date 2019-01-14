@@ -11,17 +11,9 @@ mongoose.connection
     console.log(`Connection error: ${err.message}`);
 });
 
-
 global.fetch = require('node-fetch');
-var cloudinary = require('cloudinary');
 const cc = require('cryptocompare');
 const async = require('async')
-
-cloudinary.config({ 
-  cloud_name: 'hirv2zahw', 
-  api_key: '929586181465787', 
-  api_secret: '8JIV4YWJlnxTqvbv6xVxzYV472U' 
-});
 
 var Coin = require('../models/Coin');
 

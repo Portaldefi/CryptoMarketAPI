@@ -1,4 +1,5 @@
 var ccxt = require ('ccxt');
+var TradeCoin = require('../models/TradeCoin');
 
 exports.list = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -19,28 +20,36 @@ exports.pairs = (req, res) => {
         });
     } else {
         var ex = req.query.ex.split(",");
-        var list = [];
-        (async () => {
-            for(var i=0;i<ex.length;i++){
-                var ex_id = ex[i];
-                let exchange = new ccxt[ex_id] ();
-                let markets = await exchange.loadMarkets();
-                for(var symb in markets){
-                    var pair = markets[symb];
-                    var id = pair.id;
-                    var symbol = pair.symbol;
-                    var base = pair.base;
-                    var quote = pair.quote;
-                    let index = list.findIndex(o => o.symbol === symbol);
-                    if (index==-1){
-                        list.push({id:id, symbol:symbol, base:base, quote:quote, exchange_id:[ex_id]});
-                    } else {
-                        list[index].exchange_id.push(ex_id);
-                    }
+
+        TradeCoin.aggregate([
+            {$match:{exchange_id:{$in:ex}}},
+            {$unwind: "$exchange_id" },
+            {$match: { "exchange_id": { "$in": ex} },},
+            {  
+                $group: {
+                    _id: '$id',
+                    exchange_id: { $push: "$exchange_id" },
+                    data : {"$first" : "$$ROOT"}
+                },
+            },
+            {$project : {
+                icon : "$data.icon",
+                name : "$data.name",
+                base : "$data.base",
+                quote : "$data.quote",
+                symbol : "$data.symbol",
+                change : "$data.change",
+                last : "$data.last",
+                exchange_id : 1,
+                _id:0,
+                id:"$data.id"
                 }
             }
-            res.status(200).json(list);
-        }) ()
+            ],
+            function(err,results) {
+                res.send(JSON.stringify(results));
+            }
+        )
     }
 }
 
@@ -263,4 +272,11 @@ exports.ticker = (req, res) => {
 
         }) ()
     }
+}
+
+exports.top_coin = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    TradeCoin.find({}).sort({"change": -1}).limit(1).exec( function(err, doc) {
+        res.status(200).json(doc);
+   });
 }
