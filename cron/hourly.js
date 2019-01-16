@@ -27,7 +27,7 @@ Coin.find({}, function(err, coins) {
         {
             var fsym = item.symbol;
             findandUpdate(fsym, function() {
-                 console.log('added '+fsym);
+                // console.log('added '+fsym);
                  next();
             });
         }, function (err)
@@ -37,7 +37,7 @@ Coin.find({}, function(err, coins) {
                 console.error('Error: ' + err.message);
                 return;
             }
-            console.log('Finished!');
+        //    console.log('Finished!');
         });
 
 });
@@ -73,7 +73,7 @@ function findandUpdate(fsym, callback){
                     console.error('Error: ' + err.message);
                     return;
                 }
-                console.log('Finished!');
+            //    console.log('Finished!');
                 callback();
             });
 

@@ -18,7 +18,6 @@ exports.create = (req, res) => {
 
     alert.save(function(err) {
         if (err) throw err;
-        console.log('Alert saved successfully!');
         res.status(200);
     });  
 
@@ -28,7 +27,6 @@ exports.delete = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     var id = req.body.id;
     Alert.findOneAndRemove({id:id}, {_id:0, __v:0},function(err, ets) {
-
+        res.status(200);
     });
-    res.status(200);
 }
