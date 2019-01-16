@@ -22,6 +22,10 @@ exports.get_tokens = (req, res) => {
             if("error" in data){
                 res.status(500).json(data) 
             } else {
+                if (!data.hasOwnProperty('tokens')){
+                    res.status(200).json([]);
+                    return 
+                }
                 var tokens = data.tokens;
                 var tx = etherscan.account.tokentx(address);
                 tx.then(function(result){
