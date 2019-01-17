@@ -224,7 +224,7 @@ exports.ohlcv = (req, res) => {
         });
     } else {
 
-        var sym = req.query.sym;
+        var sym = String(req.query.sym);
         var ex = req.query.ex;
         var interval = req.query.interval;
 
@@ -243,14 +243,13 @@ exports.depth = (req, res) => {
             message: "Parameters can not be empty"
         });
     } else {
-        var sym = req.query.sym;
+        var sym = String(req.query.sym);
         var ex = req.query.ex;
 
         (async () => {
             let exchange = new ccxt[ex] ();
-            let depth = exchange.fetchOrderBook (sym);
+            let depth = await exchange.fetchOrderBook(sym);
             res.status(200).json(depth);
-
         }) ()
     }
 }
@@ -262,12 +261,12 @@ exports.ticker = (req, res) => {
             message: "Parameters can not be empty"
         });
     } else {
-        var sym = req.query.sym;
+        var sym = String(req.query.sym);
         var ex = req.query.ex;
 
         (async () => {
             let exchange = new ccxt[ex] ();
-            let depth = exchange.fetchTicker (sym);
+            let depth = await exchange.fetchTicker (sym);
             res.status(200).json(depth);
 
         }) ()
