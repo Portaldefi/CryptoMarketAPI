@@ -69,9 +69,13 @@ exports.get_balance = (req, res) => {
                 'apiKey': api,
                 'secret': secret,
             });
-            let markets = await exchange.fetchBalance();
-
-            res.status(200).json(markets);
+            let markets = await exchange.fetchBalance()
+            .then(function(result){
+                res.send(result);
+            })
+            .catch(function(error) {
+                res.send(sendError(error));
+            });
         }) ()
     }
 }
@@ -93,9 +97,13 @@ exports.get_orders = (req, res) => {
                 'apiKey': api,
                 'secret': secret,
             });
-            let markets = await exchange.fetchOrders(ticker);
-
-            res.status(200).json(markets);
+            let markets = await exchange.fetchOrders(ticker)
+            .then(function(result){
+                res.send(result);
+            })
+            .catch(function(error) {
+                res.send(sendError(error));
+            });
         }) ()
     }
 }
@@ -109,11 +117,11 @@ exports.place_order = (req, res) => {
             message: "Parameters can not be empty"
         });
     } else {
-        var api = req.query.api;
-        var secret = req.query.secret;
+        var api = req.query.apiKey;
+        var secret = req.query.secretKey;
 
         var type = req.query.type;
-        var sym = req.query.sym;
+        var sym = String(req.query.sym);
         var ex = req.query.ex;
         var price = req.query.price;
         var amount = req.query.amount;
@@ -123,17 +131,41 @@ exports.place_order = (req, res) => {
                 apiKey: api,
                 secret: secret,
             });
+
             if (type=="MarketSell"){
-                await exchange.createMarketSellOrder (sym, amount);
+               let json = await exchange.createMarketSellOrder (sym, amount)
+               .then(function(result){
+                    res.send(result);
+                })
+                .catch(function(error) {
+                    res.send(sendError(error));
+                });
             } else if (type=="MarketBuy") {
-                await exchange.createMarketBuyOrder (sym, amount);
+                await exchange.createMarketBuyOrder (sym, amount)
+                .then(function(result){
+                    res.send(result);
+                })
+                .catch(function(error) {
+                    res.send(sendError(error));
+                });
             } else if (type=="LimitSell") {
                 await exchange.createLimitBuyOrder (sym, amount, price)
+                .then(function(result){
+                    res.send(result);
+                })
+                .catch(function(error) {
+                    res.send(sendError(error));
+                });
             } else if (type=="LimitBuy") {
                 await exchange.createLimitBuyOrder (sym, amount, price)
+                .then(function(result){
+                    res.send(result);
+                })
+                .catch(function(error) {
+                    res.send(sendError(error));
+                });
             }
             
-            res.status(200).json("Successfully placed!");
         }) ()
     }
 }
@@ -145,8 +177,8 @@ exports.cancel_order = (req, res) => {
             message: "Parameters can not be empty"
         });
     } else {
-        var api = req.query.api;
-        var secret = req.query.secret;
+        var api = req.query.apiKey;
+        var secret = req.query.secretKey;
 
         var id = req.query.id;
 
@@ -156,8 +188,13 @@ exports.cancel_order = (req, res) => {
                 secret: secret,
             });
 
-            exchange.cancelOrder(id);
-            res.status(200).json("Successfully canceled!");
+            await exchange.cancelOrder(id)
+            .then(function(result){
+                res.send(result);
+            })
+            .catch(function(error) {
+                res.send(sendError(error));
+            });
         }) ()
     }
 
@@ -180,9 +217,13 @@ exports.deposit = (req, res) => {
                 apiKey: api,
                 secret: secret,
             });
-            let deposit = exchange.fetchDepositAddress (sym, {})
-            res.status(200).json(deposit);
-
+            await exchange.fetchDepositAddress (sym, {})
+            .then(function(result){
+                res.send(result);
+            })
+            .catch(function(error) {
+                res.send(sendError(error));
+            });
         }) ()
     }
 
@@ -209,8 +250,13 @@ exports.withdraw = (req, res) => {
                 apiKey: api,
                 secret: secret,
             });
-            let withdraw = exchange.withdraw(sym, amount, address, tag, {});
-            res.status(200).json(withdraw);
+            await exchange.withdraw(sym, amount, address, tag, {})
+            .then(function(result){
+                res.send(result);
+            })
+            .catch(function(error) {
+                res.send(sendError(error));
+            });
 
         }) ()
     }
@@ -231,7 +277,12 @@ exports.ohlcv = (req, res) => {
         (async () => {
             let exchange = new ccxt[ex] ();
             let ohlcv = await exchange.fetchOHLCV (sym, interval)
-            res.status(200).json(ohlcv);
+            .then(function(result){
+                res.send(result);
+            })
+            .catch(function(error) {
+                res.send(sendError(error));
+            });
         }) ()
     }
 }
@@ -248,8 +299,13 @@ exports.depth = (req, res) => {
 
         (async () => {
             let exchange = new ccxt[ex] ();
-            let depth = await exchange.fetchOrderBook(sym);
-            res.status(200).json(depth);
+            let depth = await exchange.fetchOrderBook(sym)
+            .then(function(result){
+                res.send(result);
+            })
+            .catch(function(error) {
+                res.send(sendError(error));
+            });
         }) ()
     }
 }
@@ -266,8 +322,13 @@ exports.ticker = (req, res) => {
 
         (async () => {
             let exchange = new ccxt[ex] ();
-            let depth = await exchange.fetchTicker (sym);
-            res.status(200).json(depth);
+            let depth = await exchange.fetchTicker (sym)
+            .then(function(result){
+                res.send(result);
+            })
+            .catch(function(error) {
+                res.send(sendError(error));
+            });
 
         }) ()
     }
@@ -278,4 +339,8 @@ exports.top_coin = (req, res) => {
     TradeCoin.find({}).sort({"change": -1}).limit(1).exec( function(err, doc) {
         res.status(200).json(doc);
    });
+}
+
+function sendError(e){
+    return {'name': e.constructor.name, "msg":e.toString()}
 }
