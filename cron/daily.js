@@ -50,6 +50,7 @@ function findandUpdate(fsym, callback){
                 Daily.update(
                     {fsym:fsym},
                     { '$addToSet': { price: item } },
+                    { multi: true , upsert:true},
                         function(err, model) {
                             console.log(err);
                             next();

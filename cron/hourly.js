@@ -52,7 +52,7 @@ function findandUpdate(fsym, callback){
                 { multi: true},
                 function(err) {
                     console.log(err);
-                    next();
+                //    next();
                 }
             );
             
@@ -61,6 +61,7 @@ function findandUpdate(fsym, callback){
                 Hourly.updateMany(
                     {fsym:fsym},
                     { '$addToSet': { price: item } },
+                    { multi: true , upsert:true},
                         function(err) {
                             console.log(err);
                             next();
