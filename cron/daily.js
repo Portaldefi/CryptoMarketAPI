@@ -25,7 +25,7 @@ Coin.find({}, function(err, coins) {
         {
             var fsym = item.symbol;
             findandUpdate(fsym, function() {
-                console.log('added '+fsym);
+            //    console.log('added '+fsym);
                 next();
             });
         }, function (err)

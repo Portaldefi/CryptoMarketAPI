@@ -39,7 +39,7 @@ cc.coinList()
 
       Coin.findOneAndUpdate({id:item.id}, coin, options, function(error, result) {
         if (error) return;
-        console.log('added symbol '+result.id);
+       // console.log('added symbol '+result.id);
       });
       
     }, 500);

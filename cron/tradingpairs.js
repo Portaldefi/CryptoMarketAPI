@@ -94,6 +94,6 @@ function pushCoin(coin, name, icon){
 
   TradeCoin.findOneAndUpdate(query, update, options, function(error, result) {
       if (error) return;
-      console.log('added symbol '+coin.symbol)
+    //  console.log('added symbol '+coin.symbol)
   });
 }

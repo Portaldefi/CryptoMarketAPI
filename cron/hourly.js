@@ -52,7 +52,7 @@ function findandUpdate(fsym, callback){
                 { multi: true},
                 function(err) {
                     console.log(err);
-                   // next();
+                    next();
                 }
             );
             
