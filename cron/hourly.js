@@ -34,7 +34,7 @@ Coin.find({}, function(err, coins) {
         {
             if (err)
             {
-                console.error('Error: ' + err.message);
+            //    console.error('Error: ' + err.message);
                 return;
             }
         //    console.log('Finished!');
@@ -51,7 +51,7 @@ function findandUpdate(fsym, callback){
                 { $pull: { price: { time: { $lt: limit_time} }  } },
                 { multi: true},
                 function(err) {
-                    console.log(err);
+                //    console.log(err);
                 //    next();
                 }
             );
@@ -63,7 +63,7 @@ function findandUpdate(fsym, callback){
                     { '$addToSet': { price: item } },
                     { multi: true , upsert:true},
                         function(err) {
-                            console.log(err);
+                        //    console.log(err);
                             next();
                         }
                     );
@@ -79,7 +79,7 @@ function findandUpdate(fsym, callback){
             });
 
         }).catch((error) => {
-            console.log(error);
+        //    console.log(error);
             callback();
         });     
 }

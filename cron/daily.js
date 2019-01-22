@@ -32,11 +32,11 @@ Coin.find({}, function(err, coins) {
         {
             if (err)
             {
-                console.error('Error: ' + err.message);
+            //    console.error('Error: ' + err.message);
                 return;
             }
         
-            console.log('Finished!');
+        //    console.log('Finished!');
         });
 
 });
@@ -52,7 +52,7 @@ function findandUpdate(fsym, callback){
                     { '$addToSet': { price: item } },
                     { multi: true , upsert:true},
                         function(err, model) {
-                            console.log(err);
+                        //    console.log(err);
                             next();
                         }
                     );
@@ -60,15 +60,15 @@ function findandUpdate(fsym, callback){
             {
                 if (err)
                 {
-                    console.error('Error: ' + err.message);
+                //    console.error('Error: ' + err.message);
                     return;
                 }
-                console.log('Finished!');
+            //    console.log('Finished!');
                 callback();
             });
 
         }).catch((error) => {
-            console.log(error);
+        //    console.log(error);
             callback();
         });     
 }
