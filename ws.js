@@ -50,7 +50,10 @@ module.exports = function(io){
                 console.log(error)
             }
         }) ()
-        client.on('disconnect', () => console.log('Client disconnected ' + client.handshake.address));
+
+        client.on('disconnect', () => console.log('Client disconnected ' + client.handshake.address)
+            
+        );
 
     });
 }
