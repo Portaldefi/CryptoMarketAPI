@@ -340,8 +340,11 @@ exports.ticker = (req, res) => {
         var sym = String(req.query.sym);
         var ex = req.query.ex;
 
+        var proxy = process.env.http_proxy||req.ip
+        const agent = new HttpsProxyAgent (proxy)
+
         (async () => {
-            let exchange = new ccxt[ex] ();
+            let exchange = new ccxt[ex] ({agent});
             let depth = await exchange.fetchTicker (sym)
             .then(function(result){
                 res.send(result);
