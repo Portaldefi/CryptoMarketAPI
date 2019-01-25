@@ -1,14 +1,6 @@
 var ccxt = require ('ccxt');
 var TradeCoin = require('../models/TradeCoin');
-var HttpsProxyAgent = require('https-proxy-agent');
 
-
-exports.proxy = (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    var proxy = process.env.http_proxy||req.ip
-    const agent = new HttpsProxyAgent (proxy)
-    res.status(200).json(proxy);
-}
 
 exports.list = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -340,11 +332,8 @@ exports.ticker = (req, res) => {
         var sym = String(req.query.sym);
         var ex = req.query.ex;
 
-        var proxy = req.ip;
-        const agent = new HttpsProxyAgent (proxy);
-
         (async () => {
-            let exchange = new ccxt[ex] ({agent});
+            let exchange = new ccxt[ex] ({});
             let depth = await exchange.fetchTicker (sym)
             .then(function(result){
                 res.send(result);
