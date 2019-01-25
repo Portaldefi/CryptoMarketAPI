@@ -1,5 +1,14 @@
 var ccxt = require ('ccxt');
 var TradeCoin = require('../models/TradeCoin');
+var HttpsProxyAgent = require('https-proxy-agent');
+
+
+exports.proxy = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    var proxy = process.env.http_proxy||req.ip
+    const agent = new HttpsProxyAgent (proxy)
+    res.status(200).json(proxy);
+}
 
 exports.list = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -8,7 +17,7 @@ exports.list = (req, res) => {
                 {exchange:"Bittrex", id:"bittrex", icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png"},
                 {exchange:"Huobi", id:"huobi", icon:"https://cryptomarket-api.herokuapp.com/images/huobi.png"},
                 {exchange:"Coinbase Pro", id:"gdax", icon:"https://cryptomarket-api.herokuapp.com/images/gdax.png"}
-            ];
+            ];        
     res.status(200).json(list);
 }
 
