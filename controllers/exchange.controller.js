@@ -340,8 +340,8 @@ exports.ticker = (req, res) => {
         var sym = String(req.query.sym);
         var ex = req.query.ex;
 
-        var proxy = process.env.http_proxy||req.ip
-        const agent = new HttpsProxyAgent (proxy)
+        var proxy = req.ip;
+        const agent = new HttpsProxyAgent (proxy);
 
         (async () => {
             let exchange = new ccxt[ex] ({agent});
