@@ -51,17 +51,6 @@ exports.pairs = (req, res) => {
                 res.send(JSON.stringify(results));
             }
         )
-
-        // TradeCoin.aggregate([
-        //     {$match:{exchange:{$in:ex}}}
-        //     ],
-        //     function(err,results) {
-        //         res.send(JSON.stringify(results));
-        //     }
-        // )
-
-
-
     }
 }
 
@@ -80,6 +69,7 @@ exports.get_balance = (req, res) => {
             let exchange = new ccxt[ex] ({
                 'apiKey': api,
                 'secret': secret,
+                'enableRateLimit': true
             });
             let markets = await exchange.fetchBalance()
             .then(function(result){
@@ -108,6 +98,7 @@ exports.get_orders = (req, res) => {
             let exchange = new ccxt[ex] ({
                 'apiKey': api,
                 'secret': secret,
+                'enableRateLimit': true
             });
             let markets = await exchange.fetchOrders(ticker)
             .then(function(result){
@@ -142,6 +133,7 @@ exports.place_order = (req, res) => {
             let exchange = new ccxt[ex] ({
                 apiKey: api,
                 secret: secret,
+                'enableRateLimit': true
             });
 
             if (type=="MarketSell"){
@@ -198,6 +190,7 @@ exports.cancel_order = (req, res) => {
             let exchange = new ccxt[ex] ({
                 apiKey: api,
                 secret: secret,
+                'enableRateLimit': true
             });
 
             await exchange.cancelOrder(id)
@@ -228,6 +221,7 @@ exports.deposit = (req, res) => {
             let exchange = new ccxt[ex] ({
                 apiKey: api,
                 secret: secret,
+                'enableRateLimit': true
             });
             await exchange.fetchDepositAddress (sym, {})
             .then(function(result){
@@ -261,6 +255,7 @@ exports.withdraw = (req, res) => {
             let exchange = new ccxt[ex] ({
                 apiKey: api,
                 secret: secret,
+                'enableRateLimit': true
             });
             await exchange.withdraw(sym, amount, address, tag, {})
             .then(function(result){
