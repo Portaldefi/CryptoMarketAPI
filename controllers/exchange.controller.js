@@ -22,27 +22,27 @@ exports.pairs = (req, res) => {
         var ex = req.query.ex.split(",");
 
         TradeCoin.aggregate([
-            {$match:{exchange_id:{$in:ex}}},
-            {$unwind: "$exchange_id" },
-            {$match: { "exchange_id": { "$in": ex} },},
+            {$match:{"exchange.id":{$in:ex}}},
+            {$unwind: "$exchange" },
+            {$match: { "exchange.id": { "$in": ex} },},
             {  
                 $group: {
                     _id: '$id',
-                    exchange_id: { $push: "$exchange_id" },
+                    exchange: { $push: "$exchange" },
                     data : {"$first" : "$$ROOT"}
                 },
             },
             {$project : {
-                icon : "$data.icon",
-                name : "$data.name",
-                base : "$data.base",
-                quote : "$data.quote",
-                symbol : "$data.symbol",
-                change : "$data.change",
-                last : "$data.last",
-                exchange_id : 1,
-                _id:0,
-                id:"$data.id"
+                    icon : "$data.icon",
+                    name : "$data.name",
+                    base : "$data.base",
+                    quote : "$data.quote",
+                    symbol : "$data.symbol",
+                    change : "$data.change",
+                    last : "$data.last",
+                    exchange : 1,
+                    _id:0,
+                    id:"$data.id"
                 }
             }
             ],
@@ -50,6 +50,17 @@ exports.pairs = (req, res) => {
                 res.send(JSON.stringify(results));
             }
         )
+
+        // TradeCoin.aggregate([
+        //     {$match:{exchange:{$in:ex}}}
+        //     ],
+        //     function(err,results) {
+        //         res.send(JSON.stringify(results));
+        //     }
+        // )
+
+
+
     }
 }
 

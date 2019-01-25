@@ -8,10 +8,10 @@ var coinSchema = new Schema({
     symbol:String,
     base:String,
     quote:String,
-    exchange_id:[String], 
+    exchange:[{id:String,sym:String,bVol:Number,qVol:Number,price:Number,_id:false}], 
     change:Number,
     last:Number
-}, { versionKey: false});
+}, { versionKey: false, _id:false});
 
 var TradeCoin = mongoose.model('TradeCoin', coinSchema);
 module.exports = TradeCoin;

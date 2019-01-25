@@ -97,7 +97,6 @@ https://cryptomarket-api.herokuapp.com/histoday?fsyms=BTC,BCH,ETH,ZEC&tsym=USD&l
 https://cryptomarket-api.herokuapp.com/histohour?fsyms=BTC,BCH,ETH,ZEC&tsym=USD&limit=10
 https://cryptomarket-api.herokuapp.com/histominute?fsyms=BTC,BCH,ETH,ZEC&tsym=USD&limit=10
 
-
 https://cryptomarket-api.herokuapp.com/price?fsyms=BTC,BCH,ETH,ZEC&tsyms=USD,ETH
 https://cryptomarket-api.herokuapp.com/price_full?fsyms=BTC,BCH,ETH,ZEC&tsyms=USD,ETH
 

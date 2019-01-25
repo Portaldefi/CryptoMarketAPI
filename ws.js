@@ -47,7 +47,8 @@ module.exports = function(io){
                 }
 
             } catch(error){
-                console.log(error)
+                client.emit(error)
+                socket.disconnect()
             }
         }) ()
 

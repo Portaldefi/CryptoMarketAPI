@@ -42,20 +42,26 @@ function getExchange(){
           var quote = pair.quote;
           var change = 0.0;
           var last = 0.0;
+          var quote_volume = 0.0;
+          var base_volume = 0.0;
+          var price = 0.0;
           
           if (tickers != ""){
             var ticker = tickers[symbol];
             if (ticker !=undefined){
               change = ticker.change;
               last = ticker.last;
+              base_volume = ticker.baseVolume;
+              quote_volume = ticker.quoteVolume
+              price = ticker.price;
             }
           }
 
           let index = list.findIndex(o => o.symbol === symbol);
           if (index==-1){
-              list.push({id:id, symbol:symbol, base:base, quote:quote, exchange_id:[ex_id], change:change, last:last});
+              list.push({id:id, symbol:symbol, base:base, quote:quote, exchange:[{id:ex_id,sym:id,bVol:base_volume,qVol:quote_volume,price:price}], change:change, last:last});
           } else {
-              list[index].exchange_id.push(ex_id);
+              list[index].exchange.push({id:ex_id,sym:id,bVol:base_volume,qVol:quote_volume,price:price});
               if(change!=0){
                 list[index].change = change;
                 list[index].last = last;
@@ -89,11 +95,11 @@ function addCoin(coins){
 function pushCoin(coin, name, icon){
   var query = {id:coin.id},
   update =  {symbol:coin.symbol, base:coin.base, quote:coin.quote, name:name,
-            exchange_id:coin.exchange_id, change:coin.change, last:coin.last, icon:icon},
+            exchange:coin.exchange, change:coin.change, last:coin.last, icon:icon},
   options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
   TradeCoin.findOneAndUpdate(query, update, options, function(error, result) {
       if (error) return;
-    //  console.log('added symbol '+coin.symbol)
+     // console.log('added symbol '+coin.symbol)
   });
 }
