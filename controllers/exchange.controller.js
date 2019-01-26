@@ -282,7 +282,7 @@ exports.ohlcv = (req, res) => {
         var interval = req.query.interval;
 
         (async () => {
-            let exchange = new ccxt[ex] ();
+            let exchange = new ccxt[ex] ({'enableRateLimit': true});
             let ohlcv = await exchange.fetchOHLCV (sym, interval)
             .then(function(result){
                 res.send(result);
@@ -305,7 +305,7 @@ exports.depth = (req, res) => {
         var ex = req.query.ex;
 
         (async () => {
-            let exchange = new ccxt[ex] ();
+            let exchange = new ccxt[ex] ({'enableRateLimit': true});
             let depth = await exchange.fetchOrderBook(sym)
             .then(function(result){
                 res.send(result);
@@ -328,7 +328,7 @@ exports.ticker = (req, res) => {
         var ex = req.query.ex;
 
         (async () => {
-            let exchange = new ccxt[ex] ({});
+            let exchange = new ccxt[ex] ({'enableRateLimit': true});
             let depth = await exchange.fetchTicker (sym)
             .then(function(result){
                 res.send(result);
