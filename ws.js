@@ -22,7 +22,7 @@ module.exports = function(io){
                     id: id, 
                     base: base,
                     quote: quote,
-                  };
+                };
         
                 if (exchange=="gdax"){
                     exchng = new ccxws.coinbasepro();

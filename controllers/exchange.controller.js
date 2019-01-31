@@ -348,6 +348,11 @@ exports.top_coin = (req, res) => {
    });
 }
 
+exports.tradingview = (req, res) => {
+    var sym = req.query.sym;
+    res.render('tv',{id:sym});
+}
+
 function sendError(e){
     return {'name': e.constructor.name, "msg":e.toString()}
 }

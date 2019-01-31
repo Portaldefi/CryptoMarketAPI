@@ -49,7 +49,16 @@ function getExchange(){
           if (tickers != ""){
             var ticker = tickers[symbol];
             if (ticker !=undefined){
-              change = ticker.change;
+              if (ex_id=="bittrex"){
+                var pday = ticker.info.PrevDay;
+                var lst = ticker.info.last;
+                if (pday>0 && lst!=undefined){
+                  change = (lst-pday)/pday;
+                }
+              } else if (ex_id=="binance"){
+                change = parseFloat(ticker.info.priceChangePercent);
+              }
+
               last = ticker.last;
               base_volume = ticker.baseVolume;
               quote_volume = ticker.quoteVolume
@@ -57,15 +66,23 @@ function getExchange(){
             }
           }
 
+          if (ex_id=="binance" && base=="BCH"){
+            base = "BCHABC";
+            id = "BCHABC"+id.substr(3);
+          }
+
           let index = list.findIndex(o => o.symbol === symbol);
           if (index==-1){
+            //  console.log(change,ex_id,symbol);
               list.push({id:id, symbol:symbol, base:base, quote:quote, exchange:[{id:ex_id,sym:id,bVol:base_volume,qVol:quote_volume,price:price}], change:change, last:last});
           } else {
               list[index].exchange.push({id:ex_id,sym:id,bVol:base_volume,qVol:quote_volume,price:price});
-              if(change!=0){
+              var change_before = list[index].change;
+            //  if(change>change_before){
                 list[index].change = change;
                 list[index].last = last;
-              }
+                console.log(change,ex_id,symbol);
+            //  }
           }
 
       }

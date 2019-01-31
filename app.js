@@ -50,6 +50,7 @@ app.get('/exchange/ohlcv', ex.ohlcv);
 app.get('/exchange/depth', ex.depth);
 app.get('/exchange/ticker', ex.ticker);
 app.get('/exchange/top_coin', ex.top_coin);
+app.get('/exchange/tradingview', ex.tradingview);
 
 // Welcome page
 app.get('/', function(req, res) {
