@@ -48,13 +48,52 @@ module.exports = function(io){
 
             } catch(error){
                 client.emit(error)
-                socket.disconnect()
+                client.disconnect()
             }
         }) ()
 
         client.on('disconnect', () => console.log('Client disconnected ' + client.handshake.address)
-            
         );
+
+        client.on('end', function() {
+            console.log('stream end emitted')
+            console.log(io.engine.clientsCount)
+            var exchange = "";
+            var base = "";
+            var quote = "";
+            var id = "";
+    
+            exchange = client.handshake.query.ex;
+            base = client.handshake.query.base;
+            quote =client.handshake.query.quote;
+            id = client.handshake.query.id;
+
+            let symbolId = {
+                id: id, 
+                base: base,
+                quote: quote,
+            };
+
+            if (exchange=="gdax"){
+                exchng = new ccxws.coinbasepro();
+            } else {
+                exchng = new ccxws[exchange]();
+            }
+            (async () => {
+                exchng.unsubscribeTicker(symbolId);
+                exchng.unsubscribeTrades(symbolId);
+
+                if (exchange=="huobi"|| exchange=="binance"){
+                    exchng.unsubscribeLevel2Snapshots(symbolId);
+                }
+
+                if (exchange!="huobi"){
+                    exchng.unsubscribeLevel2Updates(symbolId);
+                }
+            }) ()
+            client.disconnect(true);
+
+        });
 
     });
 }

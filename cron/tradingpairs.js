@@ -81,7 +81,7 @@ function getExchange(){
             //  if(change>change_before){
                 list[index].change = change;
                 list[index].last = last;
-                console.log(change,ex_id,symbol);
+              //  console.log(change,ex_id,symbol);
             //  }
           }
 
