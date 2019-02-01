@@ -7,7 +7,7 @@ exports.list = (req, res) => {
     var list = [{exchange:"Binance", id:"binance", icon:"https://cryptomarket-api.herokuapp.com/images/binance.png"},
                 // {exchange:"Kraken", id:"kraken", icon:"https://cryptomarket-api.herokuapp.com/images/Kraken.png"},
                 {exchange:"Bittrex", id:"bittrex", icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png"},
-                {exchange:"Huobi", id:"huobi", icon:"https://cryptomarket-api.herokuapp.com/images/huobi.png"},
+                {exchange:"Huobi", id:"huobipro", icon:"https://cryptomarket-api.herokuapp.com/images/huobi.png"},
                 {exchange:"Coinbase Pro", id:"gdax", icon:"https://cryptomarket-api.herokuapp.com/images/gdax.png"}
             ];        
     res.status(200).json(list);
@@ -35,6 +35,7 @@ exports.pairs = (req, res) => {
             },
             {$project : {
                     icon : "$data.icon",
+                    quote_icon : "$data.quote_icon",
                     name : "$data.name",
                     base : "$data.base",
                     quote : "$data.quote",

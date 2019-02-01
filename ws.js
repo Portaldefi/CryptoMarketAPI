@@ -26,6 +26,8 @@ module.exports = function(io){
         
                 if (exchange=="gdax"){
                     exchng = new ccxws.coinbasepro();
+                } else if(exchange=="huobipro") {
+                    exchng = new ccxws.huobi();
                 } else {
                     exchng = new ccxws[exchange]();
                 }

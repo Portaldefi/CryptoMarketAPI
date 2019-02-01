@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var coinSchema = new Schema({
     name:String,
     icon:String,
+    quote_icon:String,
     id:String,
     symbol:String,
     base:String,

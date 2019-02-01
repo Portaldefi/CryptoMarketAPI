@@ -14,7 +14,7 @@ const async = require('async')
 
 var TradeCoin = require('../models/TradeCoin');
 var Coin = require('../models/Coin');
-var exchanges = ['gdax','huobi','bittrex','binance'];
+var exchanges = ['gdax','huobipro','bittrex','binance'];
 var ccxt = require ('ccxt');
 
 getExchange();
@@ -26,6 +26,7 @@ function getExchange(){
     
     for(var i=0;i<exchanges.length;i++){
       var ex_id = exchanges[i];
+      console.log(ex_id);
       let exchange = new ccxt[ex_id] ();
       let markets = await exchange.loadMarkets();
       let tickers = [];
@@ -96,23 +97,33 @@ function addCoin(coins){
   async.each(coins, function(coin, callback) {
     var icon_url = "";
     var name = "";
+    var qicon = "";
 
-    Coin.find({symbol:coin.base},function(err,item){
+    Coin.find({symbol:{$in:[coin.base,coin.quote]}},function(err,item){
       if (item.length>0){
-        icon_url = item[0].icon;
-        name = item[0].name;
-        pushCoin(coin, name, icon_url);
+        for(var i=0;i<item.length;i++){
+          var sym = item[i].symbol;
+          var icn = item[i].icon;
+          if (sym==coin.base){
+            icon_url = icn;
+            name = item[i].name;
+          } else if (sym==coin.quote){
+            qicon = icn;
+          }
+        }
+        pushCoin(coin, name, icon_url, qicon);
       } else {
-        pushCoin(coin, "", "");
+        pushCoin(coin,"", "","");
       }
     });  
+
   });
 }
 
-function pushCoin(coin, name, icon){
+function pushCoin(coin, name, icon, qicon){
   var query = {id:coin.id},
   update =  {symbol:coin.symbol, base:coin.base, quote:coin.quote, name:name,
-            exchange:coin.exchange, change:coin.change, last:coin.last, icon:icon},
+            exchange:coin.exchange, change:coin.change, last:coin.last, icon:icon, quote_icon:qicon},
   options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
   TradeCoin.findOneAndUpdate(query, update, options, function(error, result) {
