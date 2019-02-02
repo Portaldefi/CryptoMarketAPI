@@ -26,7 +26,6 @@ function getExchange(){
     
     for(var i=0;i<exchanges.length;i++){
       var ex_id = exchanges[i];
-      console.log(ex_id);
       let exchange = new ccxt[ex_id] ();
       let markets = await exchange.loadMarkets();
       let tickers = [];
@@ -69,7 +68,7 @@ function getExchange(){
 
           if (ex_id=="binance" && base=="BCH"){
             base = "BCHABC";
-            id = "BCHABC"+id.substr(3);
+            id = "BCHABC"+quote;
           }
 
           let index = list.findIndex(o => o.symbol === symbol);
@@ -98,32 +97,36 @@ function addCoin(coins){
     var icon_url = "";
     var name = "";
     var qicon = "";
+    var qname = "";
 
     Coin.find({symbol:{$in:[coin.base,coin.quote]}},function(err,item){
       if (item.length>0){
         for(var i=0;i<item.length;i++){
           var sym = item[i].symbol;
           var icn = item[i].icon;
+          var nm = item[i].name;
           if (sym==coin.base){
             icon_url = icn;
-            name = item[i].name;
+            name = nm;
           } else if (sym==coin.quote){
             qicon = icn;
+            qname = nm;
           }
         }
-        pushCoin(coin, name, icon_url, qicon);
+        pushCoin(coin, name, icon_url, qicon, qname);
       } else {
-        pushCoin(coin,"", "","");
+        pushCoin(coin,"", "","","");
       }
     });  
 
   });
 }
 
-function pushCoin(coin, name, icon, qicon){
+function pushCoin(coin, name, icon, qicon, qname){
   var query = {id:coin.id},
   update =  {symbol:coin.symbol, base:coin.base, quote:coin.quote, name:name,
-            exchange:coin.exchange, change:coin.change, last:coin.last, icon:icon, quote_icon:qicon},
+            exchange:coin.exchange, change:coin.change, last:coin.last, 
+            icon:icon, quote_icon:qicon, quote_name:qname},
   options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
   TradeCoin.findOneAndUpdate(query, update, options, function(error, result) {

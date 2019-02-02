@@ -5,6 +5,7 @@ var coinSchema = new Schema({
     name:String,
     icon:String,
     quote_icon:String,
+    quote_name:String,
     id:String,
     symbol:String,
     base:String,

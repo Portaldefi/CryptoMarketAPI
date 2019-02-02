@@ -13,7 +13,7 @@ mongoose.connection
 
 global.fetch = require('node-fetch');
 const cc = require('cryptocompare');
-cc.setApiKey('af16475c85c4892bc3ebd78cda62808e0b6685faa7bcee2c3e4908036dbf85be')
+//cc.setApiKey('af16475c85c4892bc3ebd78cda62808e0b6685faa7bcee2c3e4908036dbf85be')
 
 const async = require('async')
 
