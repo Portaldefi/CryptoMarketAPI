@@ -5,19 +5,9 @@ var ohlcvSchema = new Schema({
     fsym:String,
     tsym:String,
     exchange:String,
-    interval:String,
-    price:[
-            {
-                time:Number, 
-                open:Number, 
-                close:Number, 
-                high:Number, 
-                low:Number,
-                volumefrom:Number,
-                volumeto:Number,
-                _id:false,
-            }
-    ]
+    min:[[Number,Number,Number,Number,Number,Number]],
+    hour:[[Number,Number,Number,Number,Number,Number]],
+    days:[[Number,Number,Number,Number,Number,Number]]
 }, { versionKey: false});
 
 var OHLCV = mongoose.model('OHLCV', ohlcvSchema);
