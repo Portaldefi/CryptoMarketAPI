@@ -214,8 +214,8 @@ exports.deposit = (req, res) => {
             message: "Parameters can not be empty"
         });
     } else {
-        var api = req.query.api;
-        var secret = req.query.secret;
+        var api = req.query.apiKey;
+        var secret = req.query.secretKey;
 
         var sym = req.query.sym;
 
@@ -244,8 +244,8 @@ exports.withdraw = (req, res) => {
             message: "Parameters can not be empty"
         });
     } else {
-        var api = req.query.api;
-        var secret = req.query.secret;
+        var api = req.query.apiKey;
+        var secret = req.query.secretKey;
 
         var sym = req.query.sym;
         var ex = req.query.ex;

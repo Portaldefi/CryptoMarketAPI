@@ -13,34 +13,35 @@ mongoose.connection
 });
 
 global.fetch = require('node-fetch');
-var asyncLoop = require('node-async-loop');
-var moment = require('moment');
 var ccxt = require('ccxt');
 
 
 var OHLCV = require('../models/OHLCV');
 var intervals = ['1m','1h','1d'];
-// var min_limit = moment().utc().subtract(60,'minutes').unix('X')*1000;
-// var hour_limit = moment().utc().subtract(24,'hours').unix('X')*1000;
-// var days_limit = moment().utc().subtract(365,'days').unix('X')*1000;
 
 var exchanges = ccxt.exchanges;
+let sleep = (ms) => new Promise (resolve => setTimeout (resolve, ms));
+
 for (var i=0;i<exchanges.length;i++){
     var exchange_id = exchanges[i];
-    let exchange = new ccxt[exchange_id]();
-    let sleep = (ms) => new Promise (resolve => setTimeout (resolve, ms));
-
     (async () => {
+
+    let exchange = new ccxt[exchange_id]();
+
         try{
             if (exchange.has.fetchOHLCV) {
                 for (symbol in exchange.markets) {
+                    console.log(symbol)
                     await sleep (exchange.rateLimit) 
                     for (var j=0; j<intervals.length;j++){
                         await sleep (exchange.rateLimit) 
                         let data = await exchange.fetchOHLCV (symbol, intervals[j]);
-                        let base = exchange.markets[symbol].base
-                        let quote = exchange.markets[symbol].quote
-                        addData(base,quote,data,intervals[j],exchange_id);
+                        let symb = exchange.markets[symbol];
+                        if (symb !=undefined){
+                            let base = symb.base;
+                            let quote = symb.quote;
+                            addData(base,quote,data,intervals[j],exchange_id);
+                        }
                     }
                 }
             }
@@ -61,7 +62,7 @@ function addData(base,quote,data,interval,exchange){
             { '$set': { min:data }},
             { multi: true , upsert:true},
             function(err) {
-                console.log(err);
+               // console.log(err);
             }
         );
     } else if (interval=="1h"){
@@ -70,7 +71,7 @@ function addData(base,quote,data,interval,exchange){
             { '$set': { hour:data }},
             { multi: true , upsert:true},
             function(err) {
-                console.log(err);
+               // console.log(err);
             }
         );
     } else if (interval=="1d"){
@@ -79,7 +80,7 @@ function addData(base,quote,data,interval,exchange){
             { '$set': { days:data }},
             { multi: true , upsert:true},
             function(err) {
-                console.log(err);
+               // console.log(err);
             }
         );
     }

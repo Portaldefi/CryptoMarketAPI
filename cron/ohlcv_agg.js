@@ -22,3 +22,10 @@ var OHLCV = require('../models/OHLCV');
 var intervals = ['1m','1h','1d'];
 var symbols = ['USD'];
 
+OHLCV.aggregate([
+    {
+        $group:{
+            _id : { fsym:fsym}
+        }
+    }
+])
