@@ -26,21 +26,19 @@ for (var i=0;i<exchanges.length;i++){
     var exchange_id = exchanges[i];
     (async () => {
 
-    let exchange = new ccxt[exchange_id]();
+    let exchange = new ccxt[exchange_id]({'enableRateLimit': true});
 
         try{
             if (exchange.has.fetchOHLCV) {
-                for (symbol in exchange.markets) {
-                    console.log(symbol)
-                    await sleep (exchange.rateLimit) 
-                    for (var j=0; j<intervals.length;j++){
+                let markets = await exchange.fetchMarkets();
+                if (markets !=undefined){
+                    for (var m=0;m<markets.length;m++) {
+                        var symbolObj = markets[m];
                         await sleep (exchange.rateLimit) 
-                        let data = await exchange.fetchOHLCV (symbol, intervals[j]);
-                        let symb = exchange.markets[symbol];
-                        if (symb !=undefined){
-                            let base = symb.base;
-                            let quote = symb.quote;
-                            addData(base,quote,data,intervals[j],exchange_id);
+                        for (var j=0; j<intervals.length;j++){
+                            await sleep (exchange.rateLimit) 
+                            let data = await exchange.fetchOHLCV (symbolObj.symbol, intervals[j]);
+                            addData(symbolObj.base,symbolObj.quote,data,intervals[j],exchange_id);
                         }
                     }
                 }
