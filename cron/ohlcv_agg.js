@@ -12,20 +12,16 @@ mongoose.connection
     console.log(`Connection error: ${err.message}`);
 });
 
-global.fetch = require('node-fetch');
-var asyncLoop = require('node-async-loop');
-var moment = require('moment');
-var ccxt = require('ccxt');
-
-
 var OHLCV = require('../models/OHLCV');
-var intervals = ['1m','1h','1d'];
-var symbols = ['USD'];
 
 OHLCV.aggregate([
+    {$match:{"fsym":"BTC"}},
     {
         $group:{
-            _id : { fsym:fsym}
+            _id : { fsym:'$fsym'}
         }
     }
-])
+],
+function(err,results) {
+    console.log(results);
+});
