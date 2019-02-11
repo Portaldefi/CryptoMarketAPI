@@ -15,13 +15,17 @@ mongoose.connection
 var OHLCV = require('../models/OHLCV');
 
 OHLCV.aggregate([
-    {$match:{"fsym":"BTC"}},
     {
         $group:{
-            _id : { fsym:'$fsym'}
+            _id : {fsym:'$fsym', tsym:'$tsym'},
+            min_arr:{$push:'$min'},
+            ex:{$push:'$exchange'}
         }
     }
 ],
 function(err,results) {
     console.log(results);
+    for (var i=0;i<results.length;i++){
+        var res = results[i];
+    }
 });
