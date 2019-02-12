@@ -19,7 +19,7 @@ var asyncLoop = require('node-async-loop');
 var OHLCV = require('../models/OHLCV');
 var intervals = ['1m','1h','1d'];
 
-var exchanges = ['binance','gdax','huobipro','gemini','kraken','bittrex','zb','hitbtc2','bibox','bithumb','poloniex','bitstamp'];
+var exchanges = ['binance','gdax','huobipro','gemini','kraken','bittrex','zb','hitbtc2','bithumb','bitstamp'];
 
 let sleep = (ms) => new Promise (resolve => setTimeout (resolve, ms));
 

@@ -4,9 +4,10 @@ var Schema = mongoose.Schema;
 var ohlcvaSchema = new Schema({
     fsym:String,
     tsym:String,
+    type:String,
     interval:String,
     exchanges:[String],
-    price:[[Number,Number,Number,Number,Number,Number]]
+    price:[Object]
 }, { versionKey: false, _id:false});
 
 var OHLCVA = mongoose.model('OHLCVA', ohlcvaSchema);
