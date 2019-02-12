@@ -25,46 +25,62 @@ let sleep = (ms) => new Promise (resolve => setTimeout (resolve, ms));
 asyncLoop(exchanges, function (exchange_id, next)
     {
         (async () => {
-            console.log(exchange_id)
-            let exchange = new ccxt[exchange_id]({'timeout': 30000});
+            let exchange = new ccxt[exchange_id]({'timeout': 60000});
             if (exchange.has.fetchOHLCV) {
                 await exchange.fetchMarkets()
                 .then(function(markets){
                     if (markets !=undefined){
-                        for (var m=0;m<markets.length;m++) {
-                            var symbolObj = markets[m];
-                            for (var j=0; j<intervals.length;j++){
+                        asyncLoop(markets, function (symbolObj, callback)
+                        {   
+                            asyncLoop(intervals, function (interval, next_interval){
                                 (async () => {
-                                    await sleep (exchange.rateLimit).then(function(){
+                                    await sleep (exchange.rateLimit*2).then(function(){
                                         (async () => {
-                                            await exchange.fetchOHLCV (symbolObj.symbol, intervals[j])
+                                            await exchange.fetchOHLCV (symbolObj.symbol, interval)
                                             .then(function(data){
-                                                addData(symbolObj.base,symbolObj.quote,data,intervals[j],exchange_id);
+                                                console.log(symbolObj.base,symbolObj.quote,interval,exchange_id)
+                                                addData(symbolObj.base,symbolObj.quote,data,interval,exchange_id);
+                                                next_interval();
                                             })
                                             .catch(function(error) {
                                                 console.log(error)
                                                 var error_type = error.constructor.name;
-                                                if (error_type=="RequestTimeout"){
-                                                //    next();
-                                                    return;
+                                                if (error_type=="RequestTimeout" || error_type=="ExchangeError" || error_type=="ExchangeNotAvailable"){
+                                                    next();
+                                                   // return;
                                                 } else {
-                                                    return;
-                                                //    next();
+                                                    callback();
                                                 }
                                             }); 
                                         }) ()  
                                     })
+                                    if(interval=="1d"){
+                                        callback();
+                                    }
                                 }) ()  
+                            }, function (err){
+                                if (err){
+                                    callback();
+                                }
+                            });
+                        }, function (err)
+                        {
+                            if (err)
+                            {
+                                console.error('Error: ' + err.message);
+                                return;
                             }
-                        }
+                        });
                     }
+                    next();
                 })
                 .catch(function(error) {
                    next();
                 });
-             //   next();
+                
+            } else{
+                next();
             }
-            next();
         }) ()
     }, function (err)
     {
@@ -87,7 +103,7 @@ function addData(base,quote,data,interval,exchange){
             { '$set': { min:data }},
             { multi: true , upsert:true},
             function(err) {
-               // console.log(err);
+             //   console.log(err);
             }
         );
     } else if (interval=="1h"){
@@ -96,7 +112,7 @@ function addData(base,quote,data,interval,exchange){
             { '$set': { hour:data }},
             { multi: true , upsert:true},
             function(err) {
-               // console.log(err);
+             //   console.log(err);
             }
         );
     } else if (interval=="1d"){
@@ -105,7 +121,7 @@ function addData(base,quote,data,interval,exchange){
             { '$set': { days:data }},
             { multi: true , upsert:true},
             function(err) {
-               // console.log(err);
+            //    console.log(err);
             }
         );
     }
