@@ -19,7 +19,8 @@ var asyncLoop = require('node-async-loop');
 var OHLCV = require('../models/OHLCV');
 var intervals = ['1m','1h','1d'];
 
-var exchanges = ccxt.exchanges;
+var exchanges = ['binance','gdax','huobipro','gemini','kraken','bittrex','zb','hitbtc2','bibox','bithumb','poloniex','bitstamp'];
+
 let sleep = (ms) => new Promise (resolve => setTimeout (resolve, ms));
 
 asyncLoop(exchanges, function (exchange_id, next)
@@ -30,11 +31,14 @@ asyncLoop(exchanges, function (exchange_id, next)
                 await exchange.fetchMarkets()
                 .then(function(markets){
                     if (markets !=undefined){
+                        (async () => {
+                            await sleep (exchange.rateLimit); 
+                        }) ();
                         asyncLoop(markets, function (symbolObj, callback)
                         {   
                             asyncLoop(intervals, function (interval, next_interval){
                                 (async () => {
-                                    await sleep (exchange.rateLimit*2).then(function(){
+                                    await sleep (5000).then(function(){
                                         (async () => {
                                             await exchange.fetchOHLCV (symbolObj.symbol, interval)
                                             .then(function(data){
