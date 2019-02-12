@@ -16,7 +16,7 @@
     "axios": "^0.18.0",
     "bignumber.js": "^8.0.2",
     "blockcypher": "^0.2.0",
-    "ccxt": "^1.18.225",
+    "ccxt": "^1.18.227",
     "ccxws": "^0.18.4",
     "cloudinary": "^1.13.2",
     "cryptocompare": "^0.7.2",

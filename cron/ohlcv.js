@@ -16,7 +16,6 @@ global.fetch = require('node-fetch');
 var ccxt = require('ccxt');
 var asyncLoop = require('node-async-loop');
 
-
 var OHLCV = require('../models/OHLCV');
 var intervals = ['1m','1h','1d'];
 
@@ -25,29 +24,48 @@ let sleep = (ms) => new Promise (resolve => setTimeout (resolve, ms));
 
 asyncLoop(exchanges, function (exchange_id, next)
     {
-        let exchange = new ccxt[exchange_id]({'enableRateLimit': true});
-        if (exchange.has.fetchOHLCV) {
-            (async () => {
-                try {
-                    let markets = await exchange.fetchMarkets();
+        (async () => {
+            console.log(exchange_id)
+            let exchange = new ccxt[exchange_id]({'timeout': 30000});
+            if (exchange.has.fetchOHLCV) {
+                await exchange.fetchMarkets()
+                .then(function(markets){
                     if (markets !=undefined){
                         for (var m=0;m<markets.length;m++) {
                             var symbolObj = markets[m];
-                            await sleep (exchange.rateLimit) 
                             for (var j=0; j<intervals.length;j++){
-                                await sleep (exchange.rateLimit) 
-                                let data = await exchange.fetchOHLCV (symbolObj.symbol, intervals[j]);
-                                addData(symbolObj.base,symbolObj.quote,data,intervals[j],exchange_id);
+                                (async () => {
+                                    await sleep (exchange.rateLimit).then(function(){
+                                        (async () => {
+                                            await exchange.fetchOHLCV (symbolObj.symbol, intervals[j])
+                                            .then(function(data){
+                                                addData(symbolObj.base,symbolObj.quote,data,intervals[j],exchange_id);
+                                            })
+                                            .catch(function(error) {
+                                                console.log(error)
+                                                var error_type = error.constructor.name;
+                                                if (error_type=="RequestTimeout"){
+                                                //    next();
+                                                    return;
+                                                } else {
+                                                    return;
+                                                //    next();
+                                                }
+                                            }); 
+                                        }) ()  
+                                    })
+                                }) ()  
                             }
                         }
                     }
-                } catch(error){
-                    console.log(error)
-                }
-            }) ()
+                })
+                .catch(function(error) {
+                   next();
+                });
+             //   next();
+            }
             next();
-        }
-
+        }) ()
     }, function (err)
     {
         if (err)

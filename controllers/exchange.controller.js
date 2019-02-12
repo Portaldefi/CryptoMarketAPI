@@ -186,7 +186,7 @@ exports.cancel_order = (req, res) => {
     } else {
         var api = req.query.apiKey;
         var secret = req.query.secretKey;
-
+        var ex = req.query.ex;
         var id = req.query.id;
 
         (async () => {
@@ -217,7 +217,7 @@ exports.deposit = (req, res) => {
     } else {
         var api = req.query.apiKey;
         var secret = req.query.secretKey;
-
+        var ex = req.query.ex;
         var sym = req.query.sym;
 
         (async () => {
