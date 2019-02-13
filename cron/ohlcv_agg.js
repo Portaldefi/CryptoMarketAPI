@@ -64,6 +64,7 @@ function addDay(){
     });
 }
 
+
 function minArr(results, interval){
     var tdata = [];
     for (var i=0;i<results.length;i++){
