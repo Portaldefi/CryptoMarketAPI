@@ -123,8 +123,8 @@ function addCoin(coins){
 }
 
 function pushCoin(coin, name, icon, qicon, qname){
-  var query = {id:coin.id},
-  update =  {symbol:coin.symbol, base:coin.base, quote:coin.quote, name:name,
+  var query = {symbol:coin.symbol},
+  update =  {id:coin.id, base:coin.base, quote:coin.quote, name:name,
             exchange:coin.exchange, change:coin.change, last:coin.last, 
             icon:icon, quote_icon:qicon, quote_name:qname},
   options = { upsert: true, new: true, setDefaultsOnInsert: true };
