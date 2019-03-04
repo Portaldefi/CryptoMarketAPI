@@ -6,10 +6,9 @@ var Coin = require('../models/Coin');
 exports.list = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     var list = [{exchange:"Binance", id:"binance", icon:"https://cryptomarket-api.herokuapp.com/images/binance.png"},
-                // {exchange:"Kraken", id:"kraken", icon:"https://cryptomarket-api.herokuapp.com/images/Kraken.png"},
                 {exchange:"Bittrex", id:"bittrex", icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png"},
-                // {exchange:"Huobi", id:"huobipro", icon:"https://cryptomarket-api.herokuapp.com/images/huobi.png"},
-                {exchange:"Coinbase Pro", id:"gdax", icon:"https://cryptomarket-api.herokuapp.com/images/gdax.png"}
+                {exchange:"Coinbase Pro", id:"coinbasepro", icon:"https://cryptomarket-api.herokuapp.com/images/gdax.png"},
+                {exchange:"Upbit", id:"upbit", icon:"https://cryptomarket-api.herokuapp.com/images/upbit.png"}
             ];        
     res.status(200).json(list);
 }

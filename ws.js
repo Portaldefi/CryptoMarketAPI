@@ -35,15 +35,15 @@ module.exports = function(io){
                 exchng.on("ticker", trade => client.emit("ticker",trade));
                 exchng.subscribeTicker(symbolId);
 
-                exchng.on("trades", trade => console.log("trade", trade));
+                exchng.on("trades", trade => client.emit("trade", trade));
                 exchng.subscribeTrades(symbolId);
 
-                if (exchange=="huobi"|| exchange=="binance"){
+                if (exchange=="huobipro"|| exchange=="binance"||exchange=="upbit"||exchange=="zb"){
                     exchng.on("l2snapshot", trade => client.emit("orderbook", trade));
                     exchng.subscribeLevel2Snapshots(symbolId);
                 }
 
-                if (exchange!="huobi"){
+                if (exchange=="bittrex"||exchange=="coinbasepro"){
                     exchng.on("l2update", trade => client.emit("orderbook", trade));
                     exchng.subscribeLevel2Updates(symbolId);
                 }
@@ -85,11 +85,11 @@ module.exports = function(io){
                 exchng.unsubscribeTicker(symbolId);
                 exchng.unsubscribeTrades(symbolId);
 
-                if (exchange=="huobi"|| exchange=="binance"){
+                if (exchange=="huobipro"|| exchange=="binance"||exchange=="upbit"||exchange=="zb"){
                     exchng.unsubscribeLevel2Snapshots(symbolId);
                 }
 
-                if (exchange!="huobi"){
+                if (exchange=="bittrex"||exchange=="coinbasepro"){
                     exchng.unsubscribeLevel2Updates(symbolId);
                 }
             }) ()
