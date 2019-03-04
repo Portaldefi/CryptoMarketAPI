@@ -14,9 +14,13 @@ const async = require('async')
 
 var TradeCoin = require('../models/TradeCoin');
 var Coin = require('../models/Coin');
-var exchanges = ['gdax','huobipro','bittrex','binance'];
+var exchanges = ['coinbasepro','huobipro','bittrex','binance','upbit','kraken','zb','bitfinex'];
 var ccxt = require ('ccxt');
 
+// let exchange = new ccxt.kraken ();
+// (async () => {  
+//   tickers = console.log(await exchange.fetchTickers());
+// })();
 getExchange();
 
 function getExchange(){
@@ -51,12 +55,20 @@ function getExchange(){
             if (ticker !=undefined){
               if (ex_id=="bittrex"){
                 var pday = ticker.info.PrevDay;
-                var lst = ticker.info.last;
+                var lst = ticker.info.Last;
                 if (pday>0 && lst!=undefined){
                   change = (lst-pday)/pday;
                 }
               } else if (ex_id=="binance"){
                 change = parseFloat(ticker.info.priceChangePercent);
+              } else if (ex_id=="upbit"){
+                change = ticker.percentage;
+              } else if (ex_id=="kraken"){
+                var pday = ticker.open;
+                var lst = ticker.last;
+                if (pday>0 && lst!=undefined){
+                  change = (lst-pday)/pday;
+                }
               }
 
               last = ticker.last;
@@ -78,11 +90,11 @@ function getExchange(){
           } else {
               list[index].exchange.push({id:ex_id,sym:id,bVol:base_volume,qVol:quote_volume,price:price});
               var change_before = list[index].change;
-            //  if(change>change_before){
+              if(change_before==0){
                 list[index].change = change;
                 list[index].last = last;
               //  console.log(change,ex_id,symbol);
-            //  }
+              }
           }
 
       }
