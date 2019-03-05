@@ -1,5 +1,6 @@
 module.exports = function(io){
     const ccxws = require("ccxws");
+    const ccxt = require ('ccxt');
 
     io.on("connection", (client)=>{
         // console.log("Connection from client: " + client.handshake.address);
@@ -8,11 +9,13 @@ module.exports = function(io){
         var base = "";
         var quote = "";
         var id = "";
+        var symbol = "";
 
         exchange = client.handshake.query.ex;
         base = client.handshake.query.base;
         quote =client.handshake.query.quote;
         id = client.handshake.query.id;
+        symbol = client.handshake.query.symbol;
 
         var exchng = new ccxws.binance();
         (async () => {
@@ -37,15 +40,39 @@ module.exports = function(io){
 
                 exchng.on("trades", trade => client.emit("trade", trade));
                 exchng.subscribeTrades(symbolId);
-
+                
                 if (exchange=="huobipro"|| exchange=="binance"||exchange=="upbit"||exchange=="zb"){
-                    exchng.on("l2snapshot", trade => client.emit("orderbook", trade));
+                    exchng.on("l2snapshot", trade => client.emit("orderbook", sanitizeOrderbook(trade)));
                     exchng.subscribeLevel2Snapshots(symbolId);
                 }
 
                 if (exchange=="bittrex"||exchange=="coinbasepro"){
-                    exchng.on("l2update", trade => client.emit("orderbook", trade));
+                    // updates
+                    exchng.on("l2update", trade => client.emit("orderbook", sanitizeOrderbook(trade)));
                     exchng.subscribeLevel2Updates(symbolId);
+
+                    // snapshot
+                    let ccxt_ex = new ccxt[exchange] ();
+                    (async () => {
+                        await ccxt_ex.fetchTicker(symbol)
+                        .then(function(result){
+                            let snp = tickerSnapshot(result,base,quote);
+                            client.emit("ticker", snp);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+
+                        await ccxt_ex.fetchOrderBook(symbol)
+                        .then(function(result){
+                            let snp = orderSnapshot(result);
+                            client.emit("orderbook", snp);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+                    })()
+
                 }
 
             } catch(error){
@@ -98,4 +125,53 @@ module.exports = function(io){
         });
 
     });
+}
+
+
+function tickerSnapshot(obj,base,quote){
+   return {ask: String(obj.ask),
+            base: base,
+            bid: String(obj.bid),
+            change: String(obj.change),
+            high: String(obj.high),
+            last: String(obj.last),
+            low: String(obj.low),
+            open: String(obj.info.PrevDay),
+            quote: quote,
+            quoteVolume: String(obj.quoteVolume),
+            timestamp: obj.timestamp,
+            volume: String(obj.baseVolume)}; 
+}
+
+function orderSnapshot(obj){
+    var asks = obj.asks;
+    var bids = obj.bids;
+    var askArr = [];
+    var bidArr = [];
+
+    for(var i=0;i<asks.length;i++){
+        askArr.push({price:String(asks[i][0]),size:String(asks[i][1])});
+    }
+
+    for(var i=0;i<bids.length;i++){
+        bidArr.push({price:String(bids[i][0]),size:String(bids[i][1])});
+    }
+    return {asks:askArr,bids:bidArr}
+
+}
+
+function sanitizeOrderbook(obj){
+    var asks = obj.asks;
+    var bids = obj.bids;
+    var askArr = [];
+    var bidArr = [];
+    
+    for(var i=0;i<asks.length;i++){
+        askArr.push({price:String(asks[i].price),size:String(asks[i].size)});
+    }
+
+    for(var i=0;i<bids.length;i++){
+        bidArr.push({price:String(bids[i].price),size:String(bids[i].size)});
+    }
+    return {asks:askArr,bids:bidArr}
 }
