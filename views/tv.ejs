@@ -4,23 +4,29 @@
     <div id="tradingview_3a0b2"></div>
     <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/<%=id%>" rel="noopener" target="_blank"></div>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+   
     <script type="text/javascript">
-    new TradingView.widget(
-    {
-    "autosize":true,
-    "symbol": '<%=id%>',
-    "interval": "D",
-    "timezone": "Etc/UTC",
-    "theme": "Light",
-    "style": "1",
-    "locale": "en",
-    "toolbar_bg": "rgba(255,255,255,1)",
-    "enable_publishing": false,
-    "hide_legend": true,
-    "withdateranges": false,
-    "container_id": "tradingview_3a0b2"
-  }
-    );
+      new TradingView.widget(
+          {
+          "autosize":true,
+          "symbol": '<%=id%>',
+          "interval": "D",
+          "timezone": "Etc/UTC",
+          "theme": "Light",
+          "style": "1",
+          "locale": "en",
+          "toolbar_bg": "rgba(255,255,255,1)",
+          "enable_publishing": false,
+          "hide_legend": true,
+          "withdateranges": false,
+          "save_image":false,
+          "container_id": "tradingview_3a0b2",
+          
+        });
     </script>
+
   <!-- </div> -->
   <!-- TradingView Widget END -->
+
+
+

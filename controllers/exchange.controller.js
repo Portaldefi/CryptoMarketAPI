@@ -157,7 +157,33 @@ exports.asset_list = (req, res) => {
 
 exports.tradingview = (req, res) => {
     var sym = req.query.sym;
-    res.render('tv',{id:sym});
+    
+    TradeCoin.aggregate([
+        {$match:{"exchange.sym":sym}},
+        {$unwind: "$exchange" },
+        {  
+            $group: {
+                _id: '$id',
+                exchange: { $push: "$exchange" },
+                data : {"$first" : "$$ROOT"}
+            },
+        },
+        {$project : {
+                base : "$data.base",
+                quote : "$data.quote",
+                _id:0,
+            }
+        }
+        ],
+        function(err,results) {
+            var res = results[0];
+            if (res!=undefined){
+                sym = res.base+res.quote;
+            }
+        }
+    )
+
+   res.render('tv',{id:sym});
 }
 
 function sendError(e){
