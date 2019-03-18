@@ -17,8 +17,8 @@ var asyncLoop = require('node-async-loop');
 var Converter = require('../models/Converter');
 var OHLCVA = require('../models/OHLCVA');
 
-var symbols = ['BTC','ETH'];
-var currencies = ['USD'];
+var symbols = ['BTC','ETH','USD','XRP','KRW','USDT','PAX','BNB','USDC','TUSD'];
+var currencies = ['USD','BTC','ETH'];
 
 getCurrencies();
 

@@ -20,6 +20,7 @@ app.get('/price', data.price);
 app.get('/histoday', data.history_day);
 app.get('/histohour', data.history_hour);
 app.get('/histominute', data.history_minute);
+app.get('/test', data.test);
 
 // Eth API
 const eth = require('./controllers/eth.controller.js');
@@ -30,6 +31,8 @@ const block = require('./controllers/block.controller.js');
 app.get('/submit_tx', block.submit_tx);
 app.get('/address', block.address);
 app.get('/utxo', block.utxo);
+app.get('/valid', block.valid);
+
 
 // Alerts API
 const alert = require('./controllers/alert.controller.js');

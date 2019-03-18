@@ -1,5 +1,6 @@
 
 const axios = require('axios');
+const validate_address = require('cryptocurrency-address-validator');
 
 exports.submit_tx = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -129,5 +130,21 @@ exports.utxo = (req, res) => {
             res.status(500).json(error.data)
         });
  
+    }
+};
+
+exports.valid = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    if(!req.query) {
+        return res.status(400).send({
+            message: "Parameters can not be empty"
+        });
+    } else {
+        var address = req.query.address;
+        var coin = req.query.coin; 
+        var type = req.query.type; 
+
+        let valid = validate_address.validate(address,coin,type);
+        res.send(valid);
     }
 };

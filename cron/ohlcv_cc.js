@@ -18,8 +18,8 @@ var Converter = require('../models/Converter');
 var OHLCVA = require('../models/OHLCVA');
 var OHLCVC = require('../models/OHLCVC');
 
-var symbols = ['BTC','ETH'];
-var currencies = ['USD'];
+var symbols = ['BTC','ETH','USD','XRP','KRW','USDT','PAX','BNB','USDC','TUSD'];
+var currencies = ['USD','BTC','ETH'];
 var intervals = ['days','hour','min']
 
 getSymbols();

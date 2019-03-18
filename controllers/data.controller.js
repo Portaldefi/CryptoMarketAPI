@@ -152,3 +152,32 @@ exports.history_minute = (req, res) => {
 
     }
 };
+
+var OHLCVC = require('../models/OHLCVC');
+
+exports.test = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    // Validate request
+    if(!req.query) {
+        return res.status(400).send({
+            message: "Parameters can not be empty"
+        });
+    } else {
+        var fsyms = req.query.fsyms.toUpperCase().split(",");
+        var tsyms = req.query.tsyms.toUpperCase().split(",");
+        var interval = req.query.interval;
+
+        OHLCVC.find({fsym:{$in:fsyms},tsym:{$in:tsyms},interval:interval}, function(err, results){
+            var json = {};
+            
+            for (var i=0;i<results.length;i++){
+                var obj = results[i];
+                var sym = obj.fsym;
+                var dt = obj.price;
+                json[sym] = dt;
+            }
+            res.send(JSON.stringify(json));
+        })
+
+    }
+};
