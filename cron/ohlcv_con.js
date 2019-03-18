@@ -29,11 +29,13 @@ function getCurrencies(){
             var price_obj = [];
             (async () => {
                 await OHLCVA.findOne({fsym:symbol, tsym:currency, interval:"days"},function(err, res) {
-                    var price = res.price;
-                    for(var dt=0; dt<price.length; dt++){
-                        price_obj.push({t:price[dt].time,l:price[dt].last});
-                     }
-                     addToConverter(data_type, price_obj);
+                    if (res!=null){
+                        var price = res.price;
+                        for(var dt=0; dt<price.length; dt++){
+                            price_obj.push({t:price[dt].time,l:price[dt].last});
+                        }
+                        addToConverter(data_type, price_obj);
+                    }
                 });
                 next();
             }) ();

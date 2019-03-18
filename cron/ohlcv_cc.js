@@ -48,31 +48,33 @@ function getSymbols(){
 
 function normalizePrice(symbol,arr,fsym,interval){ 
     Converter.findOne({symbol:symbol},function(err, results) {
-        var price = results.price;
-        var d = price.map(function(key,i){
-            return key.t/1000;
-        });
-        var price_mod = [];
-        var cnt = 0;
-        asyncLoop(arr, function (obj, callback) {
-            cnt++;
-            var t = obj.time;
-            var o = obj.open;
-            var l = obj.last;
-            var h = obj.high;
-            var c = obj.close;
-            var v = obj.vol;
-            (async () => {
-                var nprice = await price[priceClosest(t,d)].l;
-                price_mod.push({time:t, open:o*nprice, last:l*nprice, high:h*nprice, close:c*nprice, vol:v});
-                if (cnt==arr.length){
-                    addData(fsym,'USD',interval,price_mod);
-                } 
-                callback();
-            }) ();
-        },function(err){
-           
-        });
+        if (results!=null){
+            var price = results.price;
+            var d = price.map(function(key,i){
+                return key.t/1000;
+            });
+            var price_mod = [];
+            var cnt = 0;
+            asyncLoop(arr, function (obj, callback) {
+                cnt++;
+                var t = obj.time;
+                var o = obj.open;
+                var l = obj.last;
+                var h = obj.high;
+                var c = obj.close;
+                var v = obj.vol;
+                (async () => {
+                    var nprice = await price[priceClosest(t,d)].l;
+                    price_mod.push({time:t, open:o*nprice, last:l*nprice, high:h*nprice, close:c*nprice, vol:v});
+                    if (cnt==arr.length){
+                        addData(fsym,'USD',interval,price_mod);
+                    } 
+                    callback();
+                }) ();
+            },function(err){
+            
+            });
+        }
     });
 }
 
