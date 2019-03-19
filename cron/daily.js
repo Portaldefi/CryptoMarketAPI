@@ -20,57 +20,56 @@ var asyncLoop = require('node-async-loop');
 
 var Daily = require('../models/Daily');
 var Coin = require('../models/Coin');
+var OHLCVC = require('../models/OHLCVC');
+
 
 Coin.find({}, function(err, coins) {
   if (err) throw err;
         asyncLoop(coins, function (item, next)
         {
             var fsym = item.symbol;
-            findandUpdate(fsym, function() {
-            //    console.log('added '+fsym);
-                next();
-            });
+            if (!dataexists(fsym)){
+                findandUpdate(fsym, function() {
+                    next();
+                });
+            } else { console.log(fsym)}
         }, function (err)
         {
             if (err)
             {
-            //    console.error('Error: ' + err.message);
                 return;
-            }
-        
-        //    console.log('Finished!');
+            }        
         });
-
 });
 
-function findandUpdate(fsym, callback){
-        cc.histoDay(fsym,'USD',{limit:1})
-        .then(data => {
-            
-            asyncLoop(data, function (item, next)
-            {
-                Daily.update(
-                    {fsym:fsym},
-                    { '$addToSet': { price: item } },
-                    { multi: true},
-                        function(err, model) {
-                        //    console.log(err);
-                            next();
-                        }
-                    );
-            }, function (err)
-            {
-                if (err)
-                {
-                //    console.error('Error: ' + err.message);
-                    return;
-                }
-            //    console.log('Finished!');
-                callback();
-            });
+function dataexists(fsym){
+    OHLCVC.find({fsym:fsym}, function(err, results){
+        if (results!=null){
+            return true
+        } else{
+            return false
+        }
+    })
+}
 
-        }).catch((error) => {
-        //    console.log(error);
-            callback();
-        });     
+function findandUpdate(fsym, callback){
+    cc.histoDay(fsym,'USD',{limit:500})
+    .then(data => {
+        pushCoin(fsym, 'USD', data);
+        callback();
+    }).catch((error) => {
+        console.log(error)
+        callback();
+    });    
+}
+
+function pushCoin(fsym, tsym, price){
+    var query = {fsym:fsym},
+    update =  {fsym:fsym, tsym:tsym, price:price},
+    options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  
+    Daily.findOneAndUpdate(query, update, options, function(error, result) {
+        if (error) return;
+       // console.log('added symbol '+coin.symbol)
+    });
 }

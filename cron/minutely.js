@@ -28,10 +28,11 @@ Coin.find({}, function(err, coins) {
         asyncLoop(coins, function (item, next)
         {
             var fsym = item.symbol;
-            findandUpdate(fsym, function() {
-                // console.log('added '+fsym);
-                 next();
-            });
+            if (!dataexists(fsym)){
+                findandUpdate(fsym, function() {
+                    next();
+                });
+            } else { console.log(fsym)}
         }, function (err)
         {
             if (err)
@@ -45,43 +46,33 @@ Coin.find({}, function(err, coins) {
 });
 
 function findandUpdate(fsym, callback){
-        cc.histoMinute(fsym,'USD',{limit:2})
-        .then(data => {
-            
-            Minutely.update(
-                {fsym:fsym},
-                { $pull: { price: { time: { $lt: limit_time} }  } },
-                { multi: true},
-                function(err) {
-                //    console.log(err);
-                   // next();
-                }
-            );
+    cc.histoMinute(fsym,'USD',{limit:120})
+    .then(data => {
+        pushCoin(fsym, 'USD', data);
+        callback();
+    }).catch((error) => {
+        console.log(error)
+        callback();
+    });    
+}
 
-            asyncLoop(data, function (item, next)
-            {
-                Minutely.updateMany(
-                    {fsym:fsym},
-                    { '$addToSet': { price: item } },
-                    { multi: true , upsert:true},
-                    function(err) {
-                    //    console.log(err);
-                        next();
-                    }
-                );
-            }, function (err)
-            {
-                if (err)
-                {
-                //    console.error('Error: ' + err.message);
-                    return;
-                }
-            //    console.log('Finished!');
-                callback();
-            });
+function dataexists(fsym){
+    OHLCVC.find({fsym:fsym}, function(err, results){
+        if (results!=null){
+            return true
+        } else{
+            return false
+        }
+    })
+}
 
-        }).catch((error) => {
-        //    console.log(error);
-            callback();
-        });     
+function pushCoin(fsym, tsym, price){
+    var query = {fsym:fsym},
+    update =  {fsym:fsym, tsym:tsym, price:price},
+    options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  
+    Minutely.findOneAndUpdate(query, update, options, function(error, result) {
+        if (error) return;
+       // console.log('added symbol '+coin.symbol)
+    });
 }
