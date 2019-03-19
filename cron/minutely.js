@@ -21,6 +21,8 @@ var moment = require('moment');
 
 var Minutely = require('../models/Minutely');
 var Coin = require('../models/Coin');
+var OHLCVC = require('../models/OHLCVC');
+
 var limit_time = moment().utc().subtract(120,'minutes').unix('X');
 
 Coin.find({}, function(err, coins) {
