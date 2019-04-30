@@ -46,7 +46,7 @@ module.exports = function(io){
                     exchng.subscribeLevel2Snapshots(symbolId);
                 }
 
-                if (exchange=="bittrex"||exchange=="coinbasepro"){
+                if (exchange=="bittrex"||exchange=="coinbasepro"||exchange=="kraken"){
                     // updates
                     exchng.on("l2update", trade => client.emit("orderbook", sanitizeOrderbook(trade)));
                     exchng.subscribeLevel2Updates(symbolId);
@@ -116,7 +116,7 @@ module.exports = function(io){
                     exchng.unsubscribeLevel2Snapshots(symbolId);
                 }
 
-                if (exchange=="bittrex"||exchange=="coinbasepro"){
+                if (exchange=="bittrex"||exchange=="coinbasepro"||exchange=="kraken"){
                     exchng.unsubscribeLevel2Updates(symbolId);
                 }
             }) ()

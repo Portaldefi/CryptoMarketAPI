@@ -8,7 +8,7 @@ exports.list = (req, res) => {
     var list = [{exchange:"Binance", id:"binance", icon:"https://cryptomarket-api.herokuapp.com/images/binance.png"},
                 {exchange:"Bittrex", id:"bittrex", icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png"},
                 {exchange:"Coinbase Pro", id:"coinbasepro", icon:"https://cryptomarket-api.herokuapp.com/images/gdax.png"},
-                // {exchange:"Upbit", id:"upbit", icon:"https://cryptomarket-api.herokuapp.com/images/upbit.png"}
+                {exchange:"Kraken", id:"kraken", icon:"https://cryptomarket-api.herokuapp.com/images/kraken.png"}
             ];        
     res.status(200).json(list);
 }
