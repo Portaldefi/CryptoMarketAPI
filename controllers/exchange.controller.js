@@ -1,6 +1,7 @@
 var ccxt = require ('ccxt');
 var TradeCoin = require('../models/TradeCoin');
 var Coin = require('../models/Coin');
+const Codes = require ('../errors/codes');
 
 
 exports.list = (req, res) => {
@@ -155,6 +156,11 @@ exports.asset_list = (req, res) => {
    });
 }
 
+exports.error_codes = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(Codes.error_codes);
+}
+
 exports.tradingview = (req, res) => {
     var sym = req.query.sym;
     
@@ -189,3 +195,5 @@ exports.tradingview = (req, res) => {
 function sendError(e){
     return {'name': e.constructor.name, "msg":e.toString()}
 }
+
+

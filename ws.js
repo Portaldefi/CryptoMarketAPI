@@ -150,11 +150,11 @@ function orderSnapshot(obj){
     var bidArr = [];
 
     for(var i=0;i<asks.length;i++){
-        askArr.push({price:String(asks[i][0]),size:String(asks[i][1])});
+        askArr.push({price:String(asks[i][0]),size:String(asks[i][1].toFixed(2))});
     }
 
     for(var i=0;i<bids.length;i++){
-        bidArr.push({price:String(bids[i][0]),size:String(bids[i][1])});
+        bidArr.push({price:String(bids[i][0]),size:String(bids[i][1].toFixed(2))});
     }
     return {asks:askArr,bids:bidArr}
 
@@ -167,11 +167,11 @@ function sanitizeOrderbook(obj){
     var bidArr = [];
     
     for(var i=0;i<asks.length;i++){
-        askArr.push({price:String(asks[i].price),size:String(asks[i].size)});
+        askArr.push({price:String(asks[i].price),size:String(asks[i].size.toFixed(2))});
     }
 
     for(var i=0;i<bids.length;i++){
-        bidArr.push({price:String(bids[i].price),size:String(bids[i].size)});
+        bidArr.push({price:String(bids[i].price),size:String(bids[i].size.toFixed(2))});
     }
     return {asks:askArr,bids:bidArr}
 }

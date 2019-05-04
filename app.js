@@ -49,6 +49,7 @@ app.get('/exchange/ticker', ex.ticker);
 app.get('/exchange/top_coin', ex.top_coin);
 app.get('/exchange/asset_list', ex.asset_list);
 app.get('/exchange/tradingview', ex.tradingview);
+app.get('/exchange/error_codes', ex.error_codes);
 
 // Welcome page
 app.get('/', function(req, res) {
