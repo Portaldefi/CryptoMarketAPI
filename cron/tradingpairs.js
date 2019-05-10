@@ -75,6 +75,7 @@ function getExchange(){
                 price = ticker.price;
               }
             }
+
  
             let index = list.findIndex(o => o.symbol === symbol);
             if (index==-1){

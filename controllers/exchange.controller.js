@@ -26,7 +26,7 @@ exports.pairs = (req, res) => {
         TradeCoin.aggregate([
             {$match:{"exchange.id":{$in:ex}}},
             {$unwind: "$exchange" },
-            {$match: { "exchange.id": { "$in": ex} }, "exchange.active":true},
+            {$match: { "exchange.id": { "$in": ex} }},
             {  
                 $group: {
                     _id: '$id',
@@ -34,6 +34,7 @@ exports.pairs = (req, res) => {
                     data : {"$first" : "$$ROOT"}
                 },
             },
+            { $match: { "exchange.active": true } },
             {$project : {
                     icon : "$data.icon",
                     name : "$data.name",
