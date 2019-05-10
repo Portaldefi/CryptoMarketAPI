@@ -26,7 +26,7 @@ exports.pairs = (req, res) => {
         TradeCoin.aggregate([
             {$match:{"exchange.id":{$in:ex}}},
             {$unwind: "$exchange" },
-            {$match: { "exchange.id": { "$in": ex} },},
+            {$match: { "exchange.id": { "$in": ex} }, "exchange.active":true},
             {  
                 $group: {
                     _id: '$id',
@@ -188,7 +188,7 @@ exports.tradingview = (req, res) => {
             }
         }
     )
-
+   console.log(sym);
    res.render('tv',{id:sym});
 }
 
