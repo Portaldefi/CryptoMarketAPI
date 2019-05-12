@@ -183,14 +183,15 @@ exports.tradingview = (req, res) => {
         }
         ],
         function(err,results) {
-            var res = results[0];
-            if (res!=undefined){
-                sym = res.base+res.quote;
+            var reslts = results[0];
+            if (reslts!=undefined){
+                sym = reslts.base+reslts.quote;
+                console.log(sym);
+                res.render('tv',{id:sym});
             }
         }
     )
-   console.log(sym);
-   res.render('tv',{id:sym});
+  
 }
 
 function sendError(e){
