@@ -178,6 +178,7 @@ exports.tradingview = (req, res) => {
         {$project : {
                 base : "$data.base",
                 quote : "$data.quote",
+                exchange:"$data.exchange.id",
                 _id:0,
             }
         }
@@ -185,8 +186,17 @@ exports.tradingview = (req, res) => {
         function(err,results) {
             var reslts = results[0];
             if (reslts!=undefined){
-                sym = reslts.base+reslts.quote;
-                console.log(sym);
+                var ex="";
+                if (reslts.exchange == "binance"){
+                    ex="BINANCE:";
+                } else if (reslts.exchange == "coinbasepro"){
+                    ex="COINBASE:";
+                } else if (reslts.exchange == "bittrex"){
+                    ex="BITTREX:";
+                } else if (reslts.exchange == "kraken"){
+                    ex="KRAKEN:";
+                }
+                sym = ex+reslts.base+reslts.quote;
                 res.render('tv',{id:sym});
             }
         }
