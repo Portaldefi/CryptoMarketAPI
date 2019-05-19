@@ -29,6 +29,7 @@
     "ethplorer-js": "0.0.7",
     "express": "^4.16.4",
     "https-proxy-agent": "^2.2.1",
+    "insight-explorer": "^1.0.10",
     "moment": "^2.24.0",
     "mongoose": "^5.4.17",
     "node-async-loop": "^1.2.2",
