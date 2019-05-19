@@ -206,18 +206,21 @@ function txParser(address, chain, coin){
 }
 
 function balParser(json){
-    var balance,totalReceived,totalSent,
-    unconfirmedBalance,unconfirmedReceived,unconfirmedSent=0.0;
+    var balance=0.0,totalReceived=0.0,totalSent=0.0,
+    unconfirmedBalance=0.0,unconfirmedReceived=0.0,unconfirmedSent=0.0;
     var data = json.data;
-    for (var i=0;i<data.length;i++){
-        var address = data[i];
-        totalReceived =+ address.received;
-        totalSent =+ address.sent;
-        unconfirmedReceived =+ address.unconfirmed_received;
-        unconfirmedSent =+ address.unconfirmed_sent;
-        balance =+ address.balance;
+    if (data!=null){
+        for (var i=0;i<data.length;i++){
+            var address = data[i];
+            totalReceived =+ address.received;
+            totalSent =+ address.sent;
+            unconfirmedReceived =+ address.unconfirmed_received;
+            unconfirmedSent =+ address.unconfirmed_sent;
+            balance =+ address.balance;
+        }
+        unconfirmedBalance = unconfirmedReceived-unconfirmedSent;
     }
-    unconfirmedBalance = unconfirmedReceived-unconfirmedSent;
+
     return {data:data,totalReceived:totalReceived,balance:balance,
             totalSent:totalSent,unconfirmedBalance:unconfirmedBalance, unconfirmedReceived:unconfirmedReceived,
             unconfirmedSent:unconfirmedSent
