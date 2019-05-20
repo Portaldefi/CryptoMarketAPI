@@ -10,8 +10,9 @@ var coinSchema = new Schema({
     symbol:String,
     base:String,
     quote:String,
+    platform:Object,
     exchange:[{id:String,sym:String,bVol:Number,qVol:Number,price:Number,_id:false,
-        active:Boolean,chain:String}], 
+        active:Boolean}], 
     change:Number,
     last:Number,
 }, { versionKey: false, _id:false});

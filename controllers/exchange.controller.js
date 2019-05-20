@@ -44,6 +44,7 @@ exports.pairs = (req, res) => {
                     quote_name : "$data.quote_name",
                     symbol : "$data.symbol",
                     change : "$data.change",
+                    platform: "$data.platform",
                     last : "$data.last",
                     exchange : 1,
                     _id:0,
