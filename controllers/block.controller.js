@@ -210,13 +210,16 @@ function balParser(json){
     unconfirmedBalance=0.0,unconfirmedReceived=0.0,unconfirmedSent=0.0;
     var data = json.data;
     if (data!=null){
+        if (Object.getPrototypeOf( data ) === Object.prototype){
+            data = [data];
+        }
         for (var i=0;i<data.length;i++){
             var address = data[i];
-            totalReceived =+ address.received;
-            totalSent =+ address.sent;
-            unconfirmedReceived =+ address.unconfirmed_received;
-            unconfirmedSent =+ address.unconfirmed_sent;
-            balance =+ address.balance;
+            totalReceived = totalReceived+address.received;
+            totalSent =totalSent+address.sent;
+            unconfirmedReceived =unconfirmedReceived+address.unconfirmed_received;
+            unconfirmedSent =unconfirmedSent+address.unconfirmed_sent;
+            balance = balance+address.balance;
         }
         unconfirmedBalance = unconfirmedReceived-unconfirmedSent;
     }
