@@ -215,11 +215,13 @@ function balParser(json){
         }
         for (var i=0;i<data.length;i++){
             var address = data[i];
-            totalReceived = totalReceived+address.received;
-            totalSent =totalSent+address.sent;
-            unconfirmedReceived =unconfirmedReceived+address.unconfirmed_received;
-            unconfirmedSent =unconfirmedSent+address.unconfirmed_sent;
-            balance = balance+address.balance;
+            if (address!=null) {
+                totalReceived = totalReceived+address.received;
+                totalSent =totalSent+address.sent;
+                unconfirmedReceived =unconfirmedReceived+address.unconfirmed_received;
+                unconfirmedSent =unconfirmedSent+address.unconfirmed_sent;
+                balance = balance+address.balance;
+            }
         }
         unconfirmedBalance = unconfirmedReceived-unconfirmedSent;
     }
