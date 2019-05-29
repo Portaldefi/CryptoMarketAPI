@@ -1,4 +1,5 @@
 const Alert = require('../models/Alert.js');
+var User = require('../models/User');
 
 exports.create = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
