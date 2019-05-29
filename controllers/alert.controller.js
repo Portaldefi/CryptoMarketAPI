@@ -3,10 +3,10 @@ var User = require('../models/User');
 
 exports.create = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    var device_id = req.body.dev_id;
-    var coin = req.body.coin;
-    var price = req.body.price;
-    var id = req.body.id;
+    var device_id = req.query.dev_id;
+    var coin = req.query.coin;
+    var price = req.query.price;
+    var id = req.query.id;
 
     var alert = new Alert({
         id:id,
@@ -26,7 +26,7 @@ exports.create = (req, res) => {
 
 exports.delete = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    var id = req.body.id;
+    var id = req.query.id;
     Alert.findOneAndRemove({id:id}, {_id:0, __v:0},function(err, ets) {
         res.status(200).json({
             message: 'Successfully removed'
