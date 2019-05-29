@@ -6,8 +6,7 @@ var alertSchema = new Schema({
     dev_id:String,
     symbol:String,
     price:Number,
-    percent:Number,
-    token:String
+    percent:Number
 }, { versionKey: false});
 
 var Alert = mongoose.model('Alert', alertSchema);

@@ -38,6 +38,8 @@ app.get('/valid', block.valid);
 const alert = require('./controllers/alert.controller.js');
 app.post('/create_alert', alert.create);
 app.post('/delete_alert', alert.delete);
+app.post('/register_user', alert.register_user);
+
 
 // Exchange API
 const ex = require('./controllers/exchange.controller.js');
