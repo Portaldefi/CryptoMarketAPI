@@ -8,19 +8,16 @@ exports.create = (req, res) => {
     var price = req.query.price;
     var id = req.query.id;
 
-    var alert = new Alert({
-        id:id,
-        dev_id: device_id,
-        symbol: coin,
-        price: price
-    });
-
-    alert.save(function(err) {
-        if (err) throw err;
+    var query = {id:id},
+    update =  {id:id, price:price, symbol:coin, dev_id:device_id},
+    options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  
+    Alert.findOneAndUpdate(query, update, options, function(error, result) {
+        if (error) return;
         res.status(200).json({
             message: 'Successfully created'
         });
-    });  
+    }); 
 
 }
 
@@ -39,6 +36,7 @@ exports.register_user = (req, res) => {
     var device_id = req.query.dev_id;
     var reg_id = req.query.token;
     var platform = req.query.platform;
+    
     var query = {dev_id:device_id},
     update =  {dev_id:device_id, reg_id:reg_id, platform:platform},
     options = { upsert: true, new: true, setDefaultsOnInsert: true };
