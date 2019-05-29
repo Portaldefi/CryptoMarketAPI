@@ -17,7 +17,9 @@ exports.create = (req, res) => {
 
     alert.save(function(err) {
         if (err) throw err;
-        res.status(200);
+        res.status(200).json({
+            message: 'Successfully created'
+        });
     });  
 
 }
@@ -26,25 +28,25 @@ exports.delete = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     var id = req.body.id;
     Alert.findOneAndRemove({id:id}, {_id:0, __v:0},function(err, ets) {
-        res.status(200);
+        res.status(200).json({
+            message: 'Successfully removed'
+        });
     });
 }
 
 exports.register_user = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    var device_id = req.body.dev_id;
-    var reg_id = req.body.token;
-    var platform = req.body.platform;
-
-    var user = new User({
-        dev_id: device_id,
-        reg_id: reg_id,
-        platform: platform
+    var device_id = req.query.dev_id;
+    var reg_id = req.query.token;
+    var platform = req.query.platform;
+    var query = {dev_id:device_id},
+    update =  {dev_id:device_id, reg_id:reg_id, platform:platform},
+    options = { upsert: true, new: true, setDefaultsOnInsert: true };
+  
+    User.findOneAndUpdate(query, update, options, function(error, result) {
+        if (error) return;
+        res.status(200).json({
+            message: 'Successfully created'
+        });
     });
-
-    user.save(function(err) {
-        if (err) throw err;
-        res.status(200);
-    });  
-
 }

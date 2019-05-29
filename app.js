@@ -36,9 +36,9 @@ app.get('/valid', block.valid);
 
 // Alerts API
 const alert = require('./controllers/alert.controller.js');
-app.post('/create_alert', alert.create);
-app.post('/delete_alert', alert.delete);
-app.post('/register_user', alert.register_user);
+app.get('/create_alert', alert.create);
+app.get('/delete_alert', alert.delete);
+app.get('/register_user', alert.register_user);
 
 
 // Exchange API
