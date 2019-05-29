@@ -13,6 +13,7 @@ mongoose.connection
 const async = require('async')
 
 var Alert = require('../models/Alert');
+var User = require('../models/User');
 var Price = require('../models/Minutely');
 var Push = require('../push.js');
 
@@ -61,10 +62,14 @@ function sendAlerts(){
                             for (var i=0;i<alerts.data.length;i++){
                                 var data = alerts.data[i];
                                 var alert_price = data.price;
-                                var alert_token = data.token;
+                                var alert_token = "";
+                                var alert_dev_id = data.dev_id;
                                 if (alert_price<=close_price){
-                                    Push.send_ios_notification(alert_token,alert_price,apnProvider);
-                                    removeAlert(data.id)
+                                    User.find({dev_id:alert_dev_id},function(err,user){
+                                        alert_token = user.reg_id;
+                                        Push.send_ios_notification(alert_token,alert_price,apnProvider);
+                                        removeAlert(data.id)
+                                    });  
                                 }
                             }
                         }
