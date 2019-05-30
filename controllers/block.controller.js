@@ -260,7 +260,7 @@ function txParser(json, addresses){
                 for(var l=0;l<addrs.length;l++){
                     if (add.indexOf(addrs[l]) > -1){
                         incoming = true;
-                        value = vout.value;
+                        value = parseFloat(vout.value);
                     }
                 }
             }
