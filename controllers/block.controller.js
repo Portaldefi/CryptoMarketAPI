@@ -106,12 +106,12 @@ exports.address = (req, res) => {
         var chain = req.query.chain;
         var coin = req.query.coin; 
         var add = req.query.address;
-        let tx_url = txParser(add, chain, coin);
-        let bl_url = balanceParser(add, chain, coin);
+        let tx_url = txURL(add, chain, coin);
+        let bl_url = balanceURL(add, chain, coin);
         
         axios.get(tx_url)
         .then(function (response) {
-          let txs =  {txs:response.data.items};
+          let txs =  {txs:txParser(response.data, add)};
           axios.get(bl_url)
           .then(function (response) {
             let balArr = balParser(response.data);
@@ -177,7 +177,7 @@ exports.valid = (req, res) => {
     }
 };
 
-function balanceParser(address, chain, coin){
+function balanceURL(address, chain, coin){
     var url = "https://chain.api.btc.com/v3/address/"
     if (coin == "btc"){
        url = "https://chain.api.btc.com/v3/address/"
@@ -187,7 +187,7 @@ function balanceParser(address, chain, coin){
     return url+address
 }
 
-function txParser(address, chain, coin){
+function txURL(address, chain, coin){
     var url = "https://insight.bitpay.com/api"
     if (coin == "btc"){
         if (chain =="test"){
@@ -230,4 +230,46 @@ function balParser(json){
             totalSent:totalSent,unconfirmedBalance:unconfirmedBalance, unconfirmedReceived:unconfirmedReceived,
             unconfirmedSent:unconfirmedSent
         }
+}
+
+function txParser(json, addresses){
+    var data = json.items;
+    var add = addresses.split(",");
+    var txs = [];
+    var incoming = false;
+    var value = 0.0;
+
+    for (var i=0;i<data.length;i++){
+        var inputs = data[i].vin;
+        var outputs = data[i].vout;
+        var tx= data[i];
+        
+        for(var j=0; j<inputs.length;j++){
+            var vin = inputs[j];
+            var addr = vin.addr;
+            if (add.indexOf(addr) > -1){
+                incoming = false;
+                value = vin.value;
+            }
+        }
+
+        for(var k=0; k<outputs.length;k++){
+            var vout = outputs[k];
+            var addrs = vout.scriptPubKey.addresses;
+            if(addrs !=null){
+                for(var l=0;l<addrs.length;l++){
+                    if (add.indexOf(addrs[l]) > -1){
+                        incoming = true;
+                        value = vout.value;
+                    }
+                }
+            }
+        }
+        tx.incoming = incoming;
+        tx.amount = value;
+        txs.push(tx);
+    }    
+
+    return txs
+    
 }
