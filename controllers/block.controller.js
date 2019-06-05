@@ -18,29 +18,36 @@ exports.submit_tx = (req, res) => {
             if (chain =="test"){
                 url = "https://test-insight.bitpay.com/api"
             } else {
-                url = "https://insight.bitpay.com/api"
+                url = "https://api.blockchair.com/bitcoin/push/transaction"
             }
         } else if (coin == "bch"){
             if (chain == "test"){
                 url = "https://test-bch-insight.bitpay.com/api"
             } else {
-                url = "https://bch-insight.bitpay.com/api"   
+                url = "https://api.blockchair.com/bitcoin-cash/push/transaction"   
             }
         }
-        
-        axios.post(url+'/tx/send/', {
-            rawtx: tx_hex
+        axios.post(url, {
+            data: tx_hex
         })
-        .then(function (response) {
-            var resp = response.data;
-            if ('result' in resp.txid){
-                resp = {txid:resp.txid.result};
-            }
-            res.status(200).json(resp)
+        .then(function (result) {
+            return res.status(200).send({
+                txid: result.data.data.transaction_hash
+            });
         })
         .catch(function (error) {
-            console.log(error)
-            res.status(500).json(error.response.data)
+            if (error.response!=undefined){
+                var status = error.response.data.context.code;
+                if (status==400){
+                    return res.status(status).send({
+                        message: error.response.data.context.error
+                    });
+                } else if (status==500){
+                    return res.status(status).send({
+                        message: "Server issues"
+                    });
+                }
+            }
         });
  
     }
