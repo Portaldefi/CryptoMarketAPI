@@ -53,56 +53,6 @@ exports.submit_tx = (req, res) => {
     }
 };
 
-// exports.address = (req, res) => {
-//     res.setHeader('Content-Type', 'application/json');
-//     if(!req.query) {
-//         return res.status(400).send({
-//             message: "Parameters can not be empty"
-//         });
-//     } else {
-//         var chain = req.query.chain;
-//         var coin = req.query.coin; 
-//         var add = req.query.address; 
-
-//         var url = "https://insight.bitpay.com/api"
-//         if (coin == "btc"){
-//             if (chain =="test"){
-//                 url = "https://test-insight.bitpay.com/api"
-//             } else {
-//                 url = "https://insight.bitpay.com/api"
-//             }
-//         } else if (coin == "bch"){
-//             if (chain == "test"){
-//                 url = "https://test-bch-insight.bitpay.com/api"
-//             } else {
-//                 url = "https://bch-insight.bitpay.com/api"   
-//             }
-//         }
-//         axios.get(url+'/txs/?address='+add)
-//         .then(function (response) {
-//           var txs = response.data
-//           axios.get(url+'/addr/'+add+'?noTxList=1')
-//           .then(function (response) {
-//             var balance = response.data   
-//             res.status(200).json({balance:balance, txs:txs})
-//           })
-//           .catch(function (error) {
-//             res.status(500).json(error.data)
-//           }); 
-//         })
-//         .catch(function (error) {
-//             axios.get(url+'/addr/'+add+'?noTxList=1')
-//             .then(function (response) {
-//               var balance = response.data   
-//               res.status(200).json({balance:balance, txs:txs})
-//             })
-//             .catch(function (error) {
-//               res.status(500).json(error.data)
-//             });
-//         }); 
-//     }
-// };
-
 exports.address = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     if(!req.query) {
@@ -243,20 +193,28 @@ function txParser(json, addresses){
     var data = json.items;
     var add = addresses.split(",");
     var txs = [];
-    var incoming = false;
+    var incoming = true;
+    var my_add = false;
+    var from = "";
+    var to = "";
     var value = 0.0;
 
     for (var i=0;i<data.length;i++){
         var inputs = data[i].vin;
         var outputs = data[i].vout;
         var tx= data[i];
-        
+
         for(var j=0; j<inputs.length;j++){
+            my_add = false;
+            incoming = true;
             var vin = inputs[j];
             var addr = vin.addr;
-            if (add.indexOf(addr) > -1){
+            from = addr;
+            var exists_in_add = contains(add, addr);
+            if (exists_in_add){
                 incoming = false;
-                value = vin.value;
+                my_add = true;
+                break
             }
         }
 
@@ -264,19 +222,58 @@ function txParser(json, addresses){
             var vout = outputs[k];
             var addrs = vout.scriptPubKey.addresses;
             if(addrs !=null){
-                for(var l=0;l<addrs.length;l++){
-                    if (add.indexOf(addrs[l]) > -1){
-                        incoming = true;
+                if (my_add){
+                    to = exclusionArr(add, addrs);
+                    value = parseFloat(vout.value);
+                    break
+                } else {
+                    var x = containsArr(add, addrs);
+                    if (x!=""){
                         value = parseFloat(vout.value);
+                        to = x;
+                        break
                     }
                 }
             }
         }
+
         tx.incoming = incoming;
         tx.amount = value;
+        tx.from = from;
+        tx.to = to;
         txs.push(tx);
     }    
 
     return txs
     
+}
+
+function exclusionArr(arr, arr1){
+    var add = ""
+    for(var i=0;i<arr1.length;i++){
+        if (!(arr.indexOf(arr1[i]) > -1)){
+            add = arr1[i];
+            break
+        } 
+    }
+    return add;
+}
+
+function containsArr(arr, arr1){
+    var add = ""
+    for(var i=0;i<arr1.length;i++){
+        if ((arr.indexOf(arr1[i]) > -1)){
+            add = arr[i];
+            break
+        } 
+    }
+    return add;
+}
+
+function contains(arr, ele){
+    if (arr.indexOf(ele) > -1){
+        return true
+    } else {
+        return false
+    }
 }
