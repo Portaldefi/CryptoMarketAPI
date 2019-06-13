@@ -2,6 +2,22 @@
 const axios = require('axios');
 const validate_address = require('cryptocurrency-address-validator');
 
+exports.explorer_url = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    if(!req.query) {
+        return res.status(400).send({
+            message: "Parameters can not be empty"
+        });
+    } else {
+        var platform = req.query.platform;
+        var id = req.query.tx_id; 
+        var api = coinExplorer(platform,id);
+        res.status(200).json({url:api})
+    }
+};
+
+
+
 exports.submit_tx = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     if(!req.query) {
@@ -142,6 +158,22 @@ function balanceURL(address, chain, coin){
         url = "https://bch-chain.api.btc.com/v3/address/"
     }
     return url+address
+}
+
+function coinExplorer(platform,id) {
+    var api = "";
+    if (platform == "BTC"){
+        api = "https://blockchair.com/bitcoin/transaction/"+id;
+    } else if (platform == "BCH"){
+        api = "https://blockchair.com/bitcoin-cash/transaction/"+id;
+    } else if (platform == "ETH"){
+        api = "https://blockchair.com/ethereum/transaction/"+id;
+    } else if (platform == "XLM"){
+        api = "https://stellarscan.io/transaction/"+id;
+    } else if (platform == "XTZ"){
+        api = "https://tzscan.io/"+id;
+    }
+    return api
 }
 
 function txURL(address, chain, coin){

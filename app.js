@@ -32,6 +32,7 @@ app.get('/submit_tx', block.submit_tx);
 app.get('/address', block.address);
 app.get('/utxo', block.utxo);
 app.get('/valid', block.valid);
+app.get('/explorer_url', block.check_tx);
 
 
 // Alerts API
