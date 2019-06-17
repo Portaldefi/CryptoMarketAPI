@@ -111,7 +111,7 @@ function findTx(list, address, decimals){
             var tx = list[l];
             var accnt = parseFloat(tx.value)/decimals;
             var obj = {hash:tx.hash, from:tx.from, to:tx.to, contract:tx.contractAddress, timestamp:tx.timeStamp, 
-            value:accnt};
+            value:accnt, confirmations:tx.confirmations};
             txs.push(obj);
         }
     }
