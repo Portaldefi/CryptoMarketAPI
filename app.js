@@ -26,6 +26,10 @@ app.get('/test', data.test);
 const eth = require('./controllers/eth.controller.js');
 app.get('/get_tokens', eth.get_tokens);
 
+// Tezos API
+const tez = require('./controllers/tez.controller.js');
+app.get('/get_tez_txs', tez.get_tez_txs);
+
 // Block API
 const block = require('./controllers/block.controller.js');
 app.get('/submit_tx', block.submit_tx);
