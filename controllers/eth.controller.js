@@ -68,32 +68,6 @@ exports.get_tokens = (req, res) => {
                             });
                         }
                     });
-                    // async.each(tokens, function(token, callback) {
-                    //     var tokeninfo = token.tokenInfo;
-                    //     var price = tokeninfo.price;
-                    //     var balance = token.balance;
-                    //     var symbol = tokeninfo.symbol;
-                    //     Coin.find({symbol:symbol}, function(err, row){
-                    //         if (row && balance>0){
-                    //             var decimals = tokeninfo.decimals;
-                    //             var name = tokeninfo.name;
-                    //             var contract = tokeninfo.address;
-                    //             var accnt = balance/Math.pow(10, parseFloat(decimals));    
-                    //             var tx = findTx(tokentxs, contract, Math.pow(10, parseFloat(decimals)));
-                    //             var icon = "https://chasing-coins.com/api/v1/std/logo/"+symbol;
-                    //             var obj = {symbol:symbol, name:name, address:contract, icon:icon, balance:accnt, transactions:tx}
-                    //             info.push(obj);
-                    //         }
-                    //     });
-                    //     if (counter==tokens.length){
-                    //         callback(null)
-                    //         res.status(200).json(info) 
-                    //     } 
-                    //   }, function(err) {
-                    //     if(err) {
-                    //       res.status(500).json(err)
-                    //     }
-                    // });
                 });
             }
         })
