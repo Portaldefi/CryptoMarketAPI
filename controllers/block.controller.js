@@ -210,7 +210,7 @@ function balParser(json){
     var data = json.data;
     var data_adds = [];
     if (data!=null){
-        var adds = data[0].addresses;
+        var adds = data.addresses;
         var addresses = Object.keys(adds)
         for (var i=0;i<addresses.length;i++){
             var address = adds[addresses[i]];
