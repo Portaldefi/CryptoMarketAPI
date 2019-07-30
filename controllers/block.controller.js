@@ -86,12 +86,14 @@ exports.address = (req, res) => {
         .then(function (response) {
           let txs =  {txs:txParser(response.data, add)};
           axios.get(bl_url)
-          .then(function (response) {
+          .then(function (response) {  
             let balArr = balParser(response.data);
-            res.status(200).json({balance:balArr, txs:txs})
-          })
+            res.status(200).json({balance:[balArr], txs:txs})
+          }).catch(function (error) {
+            res.status(200).json({balance:[], txs:txs})
+          });
         }).catch(function (error) {
-            res.status(500).json(error.data)
+            res.status(500).json(error.data);
         });
 
     }
@@ -150,16 +152,6 @@ exports.valid = (req, res) => {
     }
 };
 
-function balanceURL(address, chain, coin){
-    var url = "https://chain.api.btc.com/v3/address/"
-    if (coin == "btc"){
-       url = "https://chain.api.btc.com/v3/address/"
-    } else if (coin == "bch"){
-        url = "https://bch-chain.api.btc.com/v3/address/"
-    }
-    return url+address
-}
-
 function coinExplorer(platform,id) {
     var api = "";
     if (platform == "BTC"){
@@ -194,31 +186,51 @@ function txURL(address, chain, coin){
     return url+'/addrs/'+address+'/txs'
 }
 
+function balanceURL(address, chain, coin){
+    var url = "https://api.blockchair.com/bitcoin/dashboards/addresses/"
+    if (coin == "btc"){
+       if (chain =="test"){
+            url = "https://api.blockchair.com/bitcoin/testnet/dashboards/addresses/"
+        } else {
+            url = "https://api.blockchair.com/bitcoin/dashboards/addresses/"
+        }
+    } else if (coin == "bch"){
+        if (chain =="test"){
+            url = "https://api.blockchair.com/bitcoin-cash/testnet/dashboards/addresses/"
+        } else {
+            url = "https://api.blockchair.com/bitcoin-cash/dashboards/addresses/"
+        }
+    }
+    return url+address
+}
+
 function balParser(json){
     var balance=0.0,totalReceived=0.0,totalSent=0.0,
     unconfirmedBalance=0.0,unconfirmedReceived=0.0,unconfirmedSent=0.0;
     var data = json.data;
+    var data_adds = [];
     if (data!=null){
-        if (Object.getPrototypeOf( data ) === Object.prototype){
-            data = [data];
-        }
-        for (var i=0;i<data.length;i++){
-            var address = data[i];
+        var adds = data[0].addresses;
+        var addresses = Object.keys(adds)
+        for (var i=0;i<addresses.length;i++){
+            var address = adds[addresses[i]];
             if (address!=null) {
                 totalReceived = totalReceived+address.received;
-                totalSent =totalSent+address.sent;
+                totalSent =totalSent+address.spent;
                 unconfirmedReceived =unconfirmedReceived+address.unconfirmed_received;
                 unconfirmedSent =unconfirmedSent+address.unconfirmed_sent;
                 balance = balance+address.balance;
+
+                data_adds.push({address:addresses[i],received:address.received,sent:address.spent,balance:address.balance,
+                    txCount:address.output_count,unconfirmedTxCount:0.0,unconfirmedReceived:0.0,unconfirmedSent:0.0,unspentTxCount:0.0})
             }
         }
         unconfirmedBalance = unconfirmedReceived-unconfirmedSent;
     }
 
-    return {data:data,totalReceived:totalReceived,balance:balance,
+    return {data:data_adds,totalReceived:totalReceived,balance:balance,
             totalSent:totalSent,unconfirmedBalance:unconfirmedBalance, unconfirmedReceived:unconfirmedReceived,
-            unconfirmedSent:unconfirmedSent
-        }
+            unconfirmedSent:unconfirmedSent}
 }
 
 function txParser(json, addresses){
