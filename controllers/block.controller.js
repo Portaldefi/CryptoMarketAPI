@@ -90,7 +90,7 @@ exports.address = (req, res) => {
             let balArr = balParser(response.data);
             res.status(200).json({balance:balArr, txs:txs})
           }).catch(function (error) {
-            res.status(200).json({balance:[], txs:txs})
+            res.status(200).json({balance:{data:null}, txs:txs})
           });
         }).catch(function (error) {
             res.status(500).json(error.data);
@@ -217,8 +217,8 @@ function balParser(json){
             if (address!=null) {
                 totalReceived = totalReceived+address.received;
                 totalSent =totalSent+address.spent;
-                unconfirmedReceived =unconfirmedReceived+address.unconfirmed_received;
-                unconfirmedSent =unconfirmedSent+address.unconfirmed_sent;
+                unconfirmedReceived = parseInt(unconfirmedReceived);
+                unconfirmedSent = parseInt(unconfirmedSent);
                 balance = balance+address.balance;
 
                 data_adds.push({address:addresses[i],received:address.received,sent:address.spent,balance:address.balance,
@@ -226,7 +226,7 @@ function balParser(json){
                     firstTxId:'',lastTxId:''})
             }
         }
-        unconfirmedBalance = unconfirmedReceived-unconfirmedSent;
+        unconfirmedBalance = parseInt(unconfirmedReceived-unconfirmedSent);
     }
 
     return {data:data_adds,totalReceived:totalReceived,balance:balance,
