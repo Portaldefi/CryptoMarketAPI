@@ -222,7 +222,8 @@ function balParser(json){
                 balance = balance+address.balance;
 
                 data_adds.push({address:addresses[i],received:address.received,sent:address.spent,balance:address.balance,
-                    txCount:address.output_count,unconfirmedTxCount:0.0,unconfirmedReceived:0.0,unconfirmedSent:0.0,unspentTxCount:0.0})
+                    txCount:address.output_count,unconfirmedTxCount:0.0,unconfirmedReceived:0.0,unconfirmedSent:0.0,unspentTxCount:0.0,
+                    firstTxId:'',lastTxId:''})
             }
         }
         unconfirmedBalance = unconfirmedReceived-unconfirmedSent;
