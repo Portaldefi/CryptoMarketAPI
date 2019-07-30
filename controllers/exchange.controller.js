@@ -7,10 +7,26 @@ var ExchangeAsset = require('../models/ExchangeAsset');
 
 exports.list = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    var list = [{exchange:"Binance", id:"binance", icon:"https://cryptomarket-api.herokuapp.com/images/binance.png"},
-                {exchange:"Bittrex", id:"bittrex", icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png"},
-                {exchange:"Coinbase Pro", id:"coinbasepro", icon:"https://cryptomarket-api.herokuapp.com/images/gdax.png"},
-                {exchange:"Kraken", id:"kraken", icon:"https://cryptomarket-api.herokuapp.com/images/Kraken.png"}
+    var list = [{   exchange:"Binance", 
+                    id:"binance", 
+                    icon:"https://cryptomarket-api.herokuapp.com/images/binance.png",
+                    keys:"https://www.binance.com/en/support/articles/360002502072"
+                },
+                {   exchange:"Bittrex", 
+                    id:"bittrex", 
+                    icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png",
+                    keys:"https://support.3commas.io/hc/en-us/articles/360000235254-Bittrex-creating-an-API-key"
+                },
+                {   exchange:"Coinbase Pro", 
+                    id:"coinbasepro", 
+                    icon:"https://cryptomarket-api.herokuapp.com/images/gdax.png",
+                    keys:"https://support.pro.coinbase.com/customer/en/portal/articles/2945320-how-do-i-create-an-api-key-for-coinbase-pro-?b_id=17474"
+                },
+                {   exchange:"Kraken", 
+                    id:"kraken", 
+                    icon:"https://cryptomarket-api.herokuapp.com/images/Kraken.png",
+                    keys:"https://support.kraken.com/hc/en-us/articles/360000919966-How-to-generate-an-API-key-pair-"
+                }
             ];        
     res.status(200).json(list);
 }
