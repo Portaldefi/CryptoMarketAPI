@@ -88,7 +88,7 @@ exports.address = (req, res) => {
           axios.get(bl_url)
           .then(function (response) {  
             let balArr = balParser(response.data);
-            res.status(200).json({balance:[balArr], txs:txs})
+            res.status(200).json({balance:balArr, txs:txs})
           }).catch(function (error) {
             res.status(200).json({balance:[], txs:txs})
           });
