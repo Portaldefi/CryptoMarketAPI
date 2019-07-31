@@ -90,7 +90,10 @@ exports.address = (req, res) => {
             let balArr = balParser(response.data);
             res.status(200).json({balance:balArr, txs:txs})
           }).catch(function (error) {
-            res.status(200).json({balance:{data:null}, txs:txs})
+            let balarr = {data:data_adds,totalReceived:0,balance:0,
+                        totalSent:0,unconfirmedBalance:0, unconfirmedReceived:0,
+                        unconfirmedSent:0}
+            res.status(200).json({balance:balarr, txs:txs})
           });
         }).catch(function (error) {
             res.status(500).json(error.data);

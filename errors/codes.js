@@ -32,8 +32,6 @@ var binance = [{"code":"-1000","msg":"An unknown error occured while processing 
     {"code":"-1127","msg":"Lookup interval is too big."},
     {"code":"-1128","msg":"Combination of optional parameters invalid."},
     {"code":"-1130","msg":"Invalid data sent for a parameter."},
-    {"code":"-2010","msg":"New order rejected."},
-    {"code":"-2011","msg":"CANCEL_REJECTED"},
     {"code":"-2013","msg":"Order does not exist."},
     {"code":"-2014","msg":"API-key format invalid."},
     {"code":"-2015","msg":"Invalid API-key, IP, or permissions for action."},
@@ -51,17 +49,60 @@ var binance = [{"code":"-1000","msg":"An unknown error occured while processing 
 
 var coinbasepro =[    
     {"code":"two_factor_required","msg":"When sending money over 2fa limit"},
-    {"code":"EXCHANGE_MAX_NUM_ORDERS","msg":"Account has too many open orders on the exchange."},
+    {"code":"Insufficient funds","msg":"Account has too many open orders on the exchange."}
 ];
 
 var bittrex =[    
     {"code":"two_factor_required","msg":"When sending money over 2fa limit"},
-    {"code":"EXCHANGE_MAX_NUM_ORDERS","msg":"Account has too many open orders on the exchange."},
+    {"code":"2FA_FAILED","msg":"The code you entered has either expired or is invalid."},
+    {"code":"SEND_TO_DEPOSIT_ADDRESS_DENIED","msg":"The address you entered is the same as the Bittrex wallet.  This coin cannot be sent directly between Bittrex accounts."},
+    {"code":"WITHDRAWAL_LIMIT_REACHED_24H_ENHANCED","msg":"Enhanced account 24 hour withdraw limit has been reached."},
+    {"code":"WITHDRAWAL_LIMIT_REACHED_24H_BASIC","msg":"Basic account 24 hour withdraw limit has been reached.  Please verify your account at an Enhanced level to increase your withdraw limits."},
+    {"code":"PASSWORD_RESET_24H_LOCK","msg":"Withdraws are locked due to a password reset within the past 24 hours.  Please wait until 24 hours has passed since the reset to submit your withdraw."},
+    {"code":"LOGIN_2FA_LOCK_2M","msg":"Please wait a minimum of two minutes after login to submit your withdraw."},
+    {"code":"WHITELIST_VIOLATION_IP","msg":"The IP Address you are attempting to withdraw from is not in your IP Whitelist. Please add your current public IP address to your whitelist to perform this withdraw."},
+    {"code":"WHITELIST_VIOLATION_WITHDRAWAL_ADDRESS","msg":"The address you are attempting to withdraw to is not in your address whitelist.  Please add this to your whitelist in order to perform this withdraw."},
+    {"code":"WITHDRAWAL_LIMIT_REACHED_24H_UNVERIFIED","msg":"Unverified account withdraw limit has been reached.  Please verify your account to increase your withdraw limits."},
+    {"code":"WITHDRAWAL_LIMIT_REACHED_24H_NO_2FA","msg":"This withdraw is over your daily withdraw limits.  Please enable two-factor to increase your limits."},
+    {"code":"DUST_TRADE_DISALLOWED_MIN_VALUE_50K_SAT","msg":"All trades submitted must be .00050000 BTC in value or greater.  Quantity * Price must be greater than .00050000 BTC."},
+    {"code":"INVALID_CRYPTO_ADDRESS","msg":"The address you submitted is not valid for this coin."},
+    {"code":"ZERO_OR_NEGATIVE_NOT_ALLOWED","msg":"Please review your order entry. The quantity and price you are entered are not typical for this market."},
+    {"code":"PAYMENTID_INVALID","msg":"The memo/tag/paymentid/message you entered for this coin is not valid.  If your destination does not require this attachment, please leave the field blank."},
+    {"code":"WITHDRAWAL_TOO_LARGE","msg":"Each coin has a max limit per withdrawal"},
+    {"code":"APISIGN_NOT_PROVIDED","msg":"Authentication error, API keys incorrect"},
+    {"code":"INVALID_SIGNATURE","msg":"Authentication error, API keys incorrect"},
+    {"code":"INVALID_CURRENCY","msg":"Cannot find trading pairs"},
+    {"code":"INSUFFICIENT_FUNDS","msg":"You do not have funds to place this order"},
+    {"code":"QUANTITY_NOT_PROVIDED","msg":"Invalid order quantity"},
+    {"code":"MIN_TRADE_REQUIREMENT_NOT_MET","msg":"Minimum trading quantity not met"},
+    {"code":"ORDER_NOT_OPEN","msg":"Order has already been filled/cancelled."},
+    {"code":"INVALID_ORDER","msg":"Invalid order."},
+    {"code":"UUID_INVALID","msg":"Order cannot be found."},
+    {"code":"RATE_NOT_PROVIDED","msg":"Limit order requires valid price limit."}
 ];
 
 var kraken =[    
-    {"code":"two_factor_required","msg":"When sending money over 2fa limit"},
-    {"code":"EXCHANGE_MAX_NUM_ORDERS","msg":"Account has too many open orders on the exchange."},
+    {"code":"EAPI:Invalid key","msg":"Invaid API/Secret Keys"},
+    {"code":"EFunding:Unknown withdraw key","msg":"Unknown withdraw keys"},
+    {"code":"EFunding:Invalid amount","msg":"Invalid amounts"},
+    {"code":"EService:Unavailable","msg":"Kraken Service unavailable"},
+    {"code":"EDatabase:Internal error","msg":"Kraken Service unavailable"},
+    {"code":"EService:Busy","msg":"Kraken Service unavailable"},
+    {"code":"EQuery:Unknown asset","msg":"Asset is not available on Kraken"},
+    {"code":"EQuery:Unknown asset pair","msg":"Asset pair is not available on Kraken"},
+    {"code":"EAPI:Rate limit exceeded","msg":"Rate limit exceeded"},
+    {"code":"EOrder:Rate limit exceeded","msg":"Rate limit exceeded"},
+    {"code":"EGeneral:Internal error","msg":"Kraken Internal server error"},
+    {"code":"EGeneral:Temporary lockout","msg":"Temporarily account locked"},
+    {"code":"EGeneral:Permission denied","msg":"Permission denied"},
+    {"code":"EGeneral:Invalid arguments","msg":"Incorrect query parameters"},
+    {"code":"EAPI:Invalid nonce","msg":"Issues with nonce. Please reset your API keys at Kraken."},
+    {"code":"EAPI:Feature disabled","msg":"Sorry feature is temporarilydisabled"},
+    {"code":"ETrade:Locked","msg":"Account locked, please contact Kraken support"},
+    {"code":"EOrder:Cannot open position","msg":"Temporarily Kraken service is not available."},
+    {"code":"EOrder:Insufficient funds (insufficient user funds)","msg":"Insufficient user funds."},
+    {"code":"EOrder:Order minimum not met (volume too low)","msg":"Order quantity too low."},
+    {"code":"EOrder:Orders limit exceeded","msg":"Order limit exceeded on your account"}
 ];
 
 const codes  = {
