@@ -78,7 +78,8 @@ var bittrex =[
     {"code":"ORDER_NOT_OPEN","msg":"Order has already been filled/cancelled."},
     {"code":"INVALID_ORDER","msg":"Invalid order."},
     {"code":"UUID_INVALID","msg":"Order cannot be found."},
-    {"code":"RATE_NOT_PROVIDED","msg":"Limit order requires valid price limit."}
+    {"code":"RATE_NOT_PROVIDED","msg":"Limit order requires valid price limit."},
+    {"code":"WITHDRAWL_TOO_SMALL","msg":"This withdraw amount is too small to process."},
 ];
 
 var kraken =[    
