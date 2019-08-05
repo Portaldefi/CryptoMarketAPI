@@ -78,7 +78,10 @@ exports.address = (req, res) => {
     } else {
         var chain = req.query.chain;
         var coin = req.query.coin; 
-        var add = req.query.address;
+        var raw_add = req.query.address.split(',');
+        var filter_add = raw_add.filter(function(e){return e});
+        var add = filter_add.join(',');
+
         let tx_url = txURL(add, chain, coin);
         let bl_url = balanceURL(add, chain, coin);
         
