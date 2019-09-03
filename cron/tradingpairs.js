@@ -14,7 +14,7 @@ const async = require('async')
 
 var TradeCoin = require('../models/TradeCoin');
 var Coin = require('../models/Coin');
-var exchanges = ['coinbasepro','huobipro','bittrex','binance','upbit','kraken','zb','bitfinex'];
+var exchanges = ['coinbasepro','bittrex','binance','kraken'];
 var ccxt = require ('ccxt');
 
 getExchange();
