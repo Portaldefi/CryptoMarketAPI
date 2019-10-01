@@ -2,6 +2,8 @@ var ccxt = require ('ccxt');
 var TradeCoin = require('../models/TradeCoin');
 var Coin = require('../models/Coin');
 const Codes = require ('../errors/codes');
+const WithdrawFee = require ('../errors/exchange_constants');
+
 var ExchangeAsset = require('../models/ExchangeAsset');
 
 
@@ -180,6 +182,11 @@ exports.asset_list = (req, res) => {
 exports.error_codes = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.status(200).json(Codes.error_codes);
+}
+
+exports.withdraw_fees = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(WithdrawFee.withdraw_fee.kraken);
 }
 
 exports.tradingview = (req, res) => {
