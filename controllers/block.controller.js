@@ -169,7 +169,7 @@ function coinExplorer(platform,id) {
     } else if (platform == "XLM"){
         api = "https://stellarscan.io/transaction/"+id;
     } else if (platform == "XTZ"){
-        api = "https://tzscan.io/"+id;
+        api = "https://dunscan.io/"+id;
     }
     return api
 }

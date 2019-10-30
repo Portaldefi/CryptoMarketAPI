@@ -12,7 +12,7 @@ exports.get_tez_txs = (req, res) => {
         });
     } else {
         var add = req.query.address;
-        let api = "https://api6.tzscan.io/v3/operations/"
+        let api = "https://api6.dunscan.io/v3/operations/"
         axios.get(api+add+'?type=Transaction')
         .then(function (response) {
             var txs = [];
