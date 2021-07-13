@@ -115,10 +115,10 @@ exports.utxo = (req, res) => {
         var chain = req.query.chain;
         var coin = req.query.coin; 
         var add = req.query.address.split(",");
-
+        
         var url = "https://insight.bitpay.com/api"
         if (coin == "btc"){
-            if (chain =="test"){
+            if (chain == "test"){
                 url = "https://test-insight.bitpay.com/api"
             } else {
                 url = "https://insight.bitpay.com/api"
