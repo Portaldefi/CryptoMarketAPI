@@ -158,22 +158,22 @@ exports.top_coin = (req, res) => {
 
 exports.asset_list = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-//    var assets=[];
-//     TradeCoin.find({}).select('base quote -_id').exec( function(err, doc) {   
-//        for(var i= 0; i<doc.length;i++){
-//            var coin = doc[i];
-//            var base = coin.base;
-//            var quote = coin.quote;
-//            assets.push(base);
-//            assets.push(quote);
-//            if (i==doc.length-1){
-//                 var uniqueAssets = Array.from(new Set(assets))
-//                 Coin.find({symbol:{$in:uniqueAssets}}).select('name symbol icon -_id').exec(function(err,assts){
-//                     res.status(200).json(assts);
-//                 })
-//            }
-//        }
-//    });
+   var assets=[];
+    TradeCoin.find({}).select('base quote -_id').exec( function(err, doc) {   
+       for(var i= 0; i<doc.length;i++){
+           var coin = doc[i];
+           var base = coin.base;
+           var quote = coin.quote;
+           assets.push(base);
+           assets.push(quote);
+           if (i==doc.length-1){
+                var uniqueAssets = Array.from(new Set(assets))
+                Coin.find({symbol:{$in:uniqueAssets}}).select('name symbol icon -_id').exec(function(err,assts){
+                    res.status(200).json(assts);
+                })
+           }
+       }
+   });
     ExchangeAsset.find({}).exec( function(err, doc) {   
         res.status(200).json(doc);
     });
