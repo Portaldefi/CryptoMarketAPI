@@ -19,7 +19,7 @@
     "axios": "^0.21.1",
     "bignumber.js": "^8.1.1",
     "blockcypher": "^0.2.0",
-    "ccxt": "^1.18.633",
+    "ccxt": "^1.53.73",
     "ccxws": "^0.45.0",
     "cloudinary": "^1.14.0",
     "coinmarketcap-api": "^3.0.1",
