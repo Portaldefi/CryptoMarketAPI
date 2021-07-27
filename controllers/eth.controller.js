@@ -7,7 +7,6 @@ let api = new Ethplorer();
 var etherscan = require('etherscan-api').init('8ITET8HKKRCJVWVA1HJ3FQGSVB1GE1IW5R');
 var Coin = require('../models/Coin');
 
-
 exports.get_tokens = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     if(!req.query) {
@@ -90,4 +89,22 @@ function findTx(list, address, decimals){
         }
     }
     return txs
+}
+
+exports.erc20_list = (req, res) => {
+   res.setHeader('Content-Type', 'application/json');
+
+   var path = require('path');
+   var tokens = path.resolve('./public/tokens.json');
+
+   const fs = require('fs')
+
+    fs.readFile(tokens, 'utf8' , (err, data) => {
+        if (err) {
+            console.error(err)
+            return
+        }
+        res.status(200).send(data);
+    });
+
 }
