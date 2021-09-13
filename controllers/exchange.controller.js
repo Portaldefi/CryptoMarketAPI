@@ -158,7 +158,7 @@ exports.top_coin = (req, res) => {
 
 exports.asset_list = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-   var assets=[];
+    var assets=[];
     TradeCoin.find({}).select('base quote -_id').exec( function(err, doc) {   
        for(var i= 0; i<doc.length;i++){
            var coin = doc[i];
@@ -218,8 +218,6 @@ exports.tradingview = (req, res) => {
                     ex="BINANCE:";
                 } else if (reslts.exchange == "coinbasepro"){
                     ex="COINBASE:";
-                } else if (reslts.exchange == "bittrex"){
-                    ex="BITTREX:";
                 } else if (reslts.exchange == "kraken"){
                     ex="KRAKEN:";
                 }

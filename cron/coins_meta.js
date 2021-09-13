@@ -19,7 +19,7 @@ const async = require('async')
 const apiKey = '49e34a49-09c8-450b-ba4b-a8736f1c1be8'
 const client = new CoinMarketCap(apiKey)
 
-var exchanges = ['coinbasepro','huobipro','bittrex','binance','upbit','kraken','zb','bitfinex'];
+var exchanges = ['coinbasepro','bittrex','binance','kraken'];
 var ccxt = require ('ccxt');
 
 getAssets();
