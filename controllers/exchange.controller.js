@@ -14,11 +14,11 @@ exports.list = (req, res) => {
                     icon:"https://cryptomarket-api.herokuapp.com/images/binance.png",
                     keys:"https://www.binance.com/en/support/articles/360002502072"
                 },
-                {   exchange:"Bittrex", 
-                    id:"bittrex", 
-                    icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png",
-                    keys:"https://support.3commas.io/hc/en-us/articles/360000235254-Bittrex-creating-an-API-key"
-                },
+                // {   exchange:"Bittrex", 
+                //     id:"bittrex", 
+                //     icon:"https://cryptomarket-api.herokuapp.com/images/bittrex.png",
+                //     keys:"https://support.3commas.io/hc/en-us/articles/360000235254-Bittrex-creating-an-API-key"
+                // },
                 {   exchange:"Coinbase Pro", 
                     id:"coinbasepro", 
                     icon:"https://cryptomarket-api.herokuapp.com/images/gdax.png",
