@@ -3,22 +3,10 @@
     <channel>
         <title>Portal</title>
         <item>
-            <title>1.0.3</title>
-            <pubDate>Wed, 16 Oct 2019 15:49:33 -0700</pubDate>
-            <sparkle:minimumSystemVersion>10.14</sparkle:minimumSystemVersion>
-            <enclosure url="https://raw.githubusercontent.com/Tides-Network/Portal-Beta/master/Portal_1.0.24.dmg" sparkle:version="25" sparkle:shortVersionString="1.0.24" length="28122629" type="application/octet-stream" sparkle:edSignature="tHfexxiigmAKXbHR6DGTBZ9LNvyiIS8ivJGHCq6rAHrI5poLJOTAZhRbvQiFiNiHgkBL3aQ7ZLcjxcmQ3vlAAA=="/>
-        </item>
-        <item>
-            <title>1.0.25</title>
-            <pubDate>Wed, 25 Mar 2020 18:58:22 -0700</pubDate>
-            <sparkle:minimumSystemVersion>10.14</sparkle:minimumSystemVersion>
-            <enclosure url="https://raw.githubusercontent.com/Tides-Network/Portal-Beta/master/Portal_1.0.25.dmg" sparkle:version="26" sparkle:shortVersionString="1.0.25" length="30780090" type="application/octet-stream" sparkle:edSignature="6tISESCSmq9u0D0EeoS4Gc8nFIgytoNYZJodGdGyLroIkFMIPD09WupW3fufV/tbGiaBi2fHN1FySRHRcm3UDg=="/>
-        </item>
-        <item>
-            <title>1.0.26</title>
-            <pubDate>Wed, 25 Mar 2020 19:25:35 -0700</pubDate>
-            <sparkle:minimumSystemVersion>10.14</sparkle:minimumSystemVersion>
-            <enclosure url="https://raw.githubusercontent.com/Tides-Network/Portal-Beta/master/Portal_1.0.26.dmg" sparkle:version="27" sparkle:shortVersionString="1.0.26" length="30778706" type="application/octet-stream" sparkle:edSignature="mWIoMHgh5fWNAVT/5iNpjNk6J0uJLJgWDntr6CkQZEXWMtsDlSOlTTqbHobUXE2LnZ8iCcYder/E/HL3vhNdAg=="/>
+            <title>1.0</title>
+            <pubDate>Tue, 28 Sep 2021 11:46:09 -0700</pubDate>
+            <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
+            <enclosure url="https://cryptomarket-api.herokuapp.com/Portal_Mac_1.03.dmg" sparkle:version="3" sparkle:shortVersionString="1.0" length="30527229" type="application/octet-stream"/>
         </item>
     </channel>
 </rss>
