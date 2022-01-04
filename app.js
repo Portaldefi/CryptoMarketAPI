@@ -24,7 +24,6 @@ app.get('/test', data.test);
 
 // Eth API
 const eth = require('./controllers/eth.controller.js');
-app.get('/get_tokens', eth.get_tokens);
 app.get('/erc20_token_list', eth.erc20_list);
 
 // Tezos API
