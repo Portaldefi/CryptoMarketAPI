@@ -30,6 +30,7 @@
     "erc20-token-list": "0.0.3",
     "ethereumjs-abi": "^0.6.7",
     "ethereumjs-util": "^6.1.0",
+    "ethers": "^5.5.3",
     "ethplorer-js": "0.0.7",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
