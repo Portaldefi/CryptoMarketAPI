@@ -4,8 +4,6 @@ var asyncLoop = require('node-async-loop');
 let Ethplorer = require('ethplorer-js').Ethplorer;
 let api = new Ethplorer();
 
-var Coin = require('../models/Coin');
-
 
 exports.erc20_list = (req, res) => {
    res.setHeader('Content-Type', 'application/json');

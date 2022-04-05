@@ -3,8 +3,7 @@ HOST: http://polls.apiblueprint.org/
 
 # Portal Web Services
 
-Portal web services provide several APIs for registering devices, setting alerts, getting market prices, interacting with ethereum, bitcoin, tezos blockchains and getting exchange specific data.
-It is a one stop shop that powers various features in Portal desktop app. 
+Portal web services provide several APIs for registering devices, setting alerts, getting market prices
 
 ## BASE URL
 ### REST API 
@@ -66,7 +65,10 @@ socket.on("connect") {
 + count: int - optional number of orders aggregated into the price point
 
 # API Collection
-Below are a list of APIs leverage in portal desktpo app at various interfaces.
+Below are a list of APIs leverage in portal desktop app at various interfaces.
+
+## Get all ERC20 tokens [/erc20_token_list]
+### Get a list of all popular ERC20 tokens (will be deprecated once tokenlist is enabled) [GET]
 
 ## Top Coin [/exchange/top_coin]
 ### Get top coin by 24hr % change [GET]
@@ -336,135 +338,6 @@ Below are a list of APIs leverage in portal desktpo app at various interfaces.
                  "msg":"Account has too many open orders on the exchange."
               }
            ]
-        }
-
-
-## Bitcoin/Bitcoin cash Get Address, Balances, Txs [/address{?address,chain,coin}]
-### Get Address balances and recent Transactions [GET]
-+ Parameters
-    + address (string) - wallet address 
-    + chain (string) - supported "test" and "main"
-    + coin (string) - supported "btc" and "bch"
-+ Response 200 (application/json)
-
-
-## Bitcoin/Bitcoin cash Submit tx [/submit_tx{?tx_hex,chain,coin}]
-### Submit and broadcast raw transaction [GET]
-+ Parameters
-    + tx_hex (string) - signed transaction hex
-    + chain (string) - supported "test" and "main"
-    + coin (string) - supported "btc" and "bch"
-+ Response 200 (application/json)
-
-
-## Ethereum & ERC20 tokens API [/get_tokens{?address}]
-### Get ERC20 Tokens [GET]
-+ Parameters
-    + address (string) - wallet address 
-+ Response 200 (application/json)
-
-
-## Tezos API [/get_tez_txs{?address}]
-### Get transactions [GET]
-+ Parameters
-    + address (string) - wallet address 
-+ Response 200 (application/json)
-
-
-## Daily historical coin prices API [/histoday{?fsyms,tsym,limit}]
-### Get daily historical prices [GET]
-+ Parameters
-    + fsyms - comma seperated coin list ex: "btc,eth"
-    + tsym - only "USD" is supported. user fixer.io api for local currency conversions
-    + limit - number of days, ex: limit = 10
-+ Response 200 (application/json)
-
-        {  
-           "BTC":[  
-              {  
-                 "time":1561507200,
-                 "close":12905.36,
-                 "high":13826.76,
-                 "low":11679.1,
-                 "open":11740.34
-              },
-              {  
-                 "time":1561593600,
-                 "close":12764.51,
-                 "high":12905.36,
-                 "low":12764.51,
-                 "open":12905.36
-              }
-           ]
-        }
-    
-
-## Hourly historical coin prices API [/histohour{?fsyms,tsym,limit}]
-### Get hourly historical prices [GET]
-+ Parameters
-    + fsyms - comma seperated coin list ex: "btc,eth"
-    + tsym - only "USD" is supported. user fixer.io api for local currency conversions
-    + limit - number of data points, ex: limit = 10
-+ Response 200 (application/json)
-
-        {  
-           "BTC":[  
-              {  
-                 "time":1561507200,
-                 "close":12905.36,
-                 "high":13826.76,
-                 "low":11679.1,
-                 "open":11740.34
-              },
-              {  
-                 "time":1561593600,
-                 "close":12764.51,
-                 "high":12905.36,
-                 "low":12764.51,
-                 "open":12905.36
-              }
-           ]
-        }
-
-## Minutely historical coin prices API [/histominute{?fsyms,tsym,limit}]
-### Get minutely historical prices [GET]
-+ Parameters
-    + fsyms - comma seperated coin list ex: "btc,eth"
-    + tsym - only "USD" is supported. user fixer.io api for local currency conversions
-    + limit - number of data points, ex: limit = 10
-+ Response 200 (application/json)
-
-        {  
-           "BTC":[  
-              {  
-                 "time":1561507200,
-                 "close":12905.36,
-                 "high":13826.76,
-                 "low":11679.1,
-                 "open":11740.34
-              },
-              {  
-                 "time":1561593600,
-                 "close":12764.51,
-                 "high":12905.36,
-                 "low":12764.51,
-                 "open":12905.36
-              }
-           ]
-        }
-
-## Current coin prices API [/price?{fsyms,tsym}]
-### Get current price [GET]
-+ Parameters
-    + fsyms - comma seperated coin list ex: "btc,eth"
-    + tsym - only "USD" is supported. user fixer.io api for local currency conversions
-+ Response 200 (application/json)
-
-        {  
-           "ZEC":{  
-              "USD":100.16,
-              "ETH":0.3463
-           }
         }
 
 ## Create a price alerts API [/create_alert{?id,dev_id,,coin,price}]
