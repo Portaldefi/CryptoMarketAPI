@@ -17,7 +17,6 @@ const async = require('async')
 
 var Alert = require('../models/Alert');
 var User = require('../models/User');
-var Push = require('../push.js');
 var Worker = require('../worker.js');
 
 let alertQueue = new Queue('queue', REDIS_URL);

@@ -1,5 +1,6 @@
 let throng = require('throng');
 let Queue = require("bull");
+var Push = require('../push.js');
 
 // Connect to a local redis instance locally, and the Heroku-provided URL in production
 let REDIS_URL = process.env.REDIS_URL
@@ -19,11 +20,9 @@ function sleep(ms) {
 }
 
 function start() {
-  // Connect to the named work queue
     let alertQueue = new Queue('queue', REDIS_URL);
 
     alertQueue.process(function (job, done) {
-        console.log("sending message");
         Push.send_ios_notification(job.data.alert_token,job.data.alert_price);
     });
 }
