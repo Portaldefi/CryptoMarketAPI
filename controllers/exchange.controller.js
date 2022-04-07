@@ -30,7 +30,9 @@ exports.list = (req, res) => {
 
 exports.pairs = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    if(req.query!={}) {
+    
+    if (isEmpty(req.query)) {
+        console.log("jack")
         return res.status(400).send({
             message: "Parameters can not be empty"
         });
@@ -74,7 +76,7 @@ exports.pairs = (req, res) => {
 
 exports.ohlcv = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    if(req.query!={}) {
+    if(isEmpty(req.query)) {
         return res.status(400).send({
             message: "Parameters can not be empty"
         });
@@ -99,7 +101,7 @@ exports.ohlcv = (req, res) => {
 
 exports.depth = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    if(req.query!={}) {
+    if(isEmpty(req.query)) {
         return res.status(400).send({
             message: "Parameters can not be empty"
         });
@@ -122,7 +124,7 @@ exports.depth = (req, res) => {
 
 exports.ticker = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    if(req.query!={}) {
+    if(isEmpty(req.query)) {
         return res.status(400).send({
             message: "Parameters can not be empty"
         });
@@ -226,4 +228,8 @@ exports.tradingview = (req, res) => {
 
 function sendError(e){
     return {'name': e.constructor.name, "msg":e.toString()}
+}
+
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
 }
