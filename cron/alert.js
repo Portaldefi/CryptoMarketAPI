@@ -87,7 +87,7 @@ function isEmpty(obj) {
 
 function inMargin(alert_price,current_price) {
     var margin = Math.abs((alert_price - current_price)*100/current_price);
-    if (margin > 5){
+    if (margin < 5){
         return true
     } else {
         return false
