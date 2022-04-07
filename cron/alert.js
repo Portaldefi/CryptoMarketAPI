@@ -1,6 +1,8 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const CoinpaprikaAPI = require('@coinpaprika/api-nodejs-client');
+let Queue = require("bull");
+let REDIS_URL = process.env.REDIS_URL
 
 mongoose.connect(process.env.DATABASE);
 mongoose.Promise = global.Promise;
@@ -16,16 +18,9 @@ const async = require('async')
 var Alert = require('../models/Alert');
 var User = require('../models/User');
 var Push = require('../push.js');
+var Worker = require('../worker.js');
 
-const Queue = require('bull');
-const alertQueue = new Queue('queue', process.env.REDIS_URL)
-
-alertQueue.process(function (job, done) {
-    var apnProvider = new apn.Provider(apnsoptions);
-    Push.send_ios_notification(job.data.alert_token,job.data.alert_price,apnProvider);
-    console.log("sending message");
-    apnProvider.shutdown();
-});
+let alertQueue = new Queue('queue', REDIS_URL);
 
 sendAlerts();
 

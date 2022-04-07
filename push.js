@@ -1,6 +1,17 @@
 var apn = require('apn');
 
-module.exports.send_ios_notification = function(deviceToken, msg, provider){
+var apnsoptions = {
+    token: {
+      key: "public/push/AuthKey_FM695U6F8J.p8",
+      keyId: "FM695U6F8J",
+      teamId: "HBPT8C8527"
+    },
+    production: false
+};
+
+module.exports.send_ios_notification = function(deviceToken, msg){
+    var apnProvider = new apn.Provider(apnsoptions);
+    
     var note = new apn.Notification();
     note.expiry = Math.floor(Date.now() / 1000) + 3600;
     note.badge = 1;
@@ -24,5 +35,7 @@ module.exports.send_ios_notification = function(deviceToken, msg, provider){
           }
         });
     });
+
+    apnProvider.shutdown();
 
 }

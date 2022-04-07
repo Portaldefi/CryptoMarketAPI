@@ -22,15 +22,7 @@ server.listen(process.env.PORT || 3000, () => {
     console.log(`Express is running on port ${server.address().port}`);
 });
 
-var apn = require('apn');
-var apnsoptions = {
-    token: {
-      key: "public/push/AuthKey_FM695U6F8J.p8",
-      keyId: "FM695U6F8J",
-      teamId: "HBPT8C8527"
-    },
-    production: false
-};
+
 
 
 
