@@ -32,13 +32,5 @@ var apnsoptions = {
     production: false
 };
 
-const Queue = require('bull');
-const alertQueue = new Queue('queue', process.env.REDIS_URL)
 
-alertQueue.process(function (job, done) {
-    var apnProvider = new apn.Provider(apnsoptions);
-    Push.send_ios_notification(job.data.alert_token,job.data.alert_price,apnProvider);
-    console.log("sending message");
-    apnProvider.shutdown();
-});
 
