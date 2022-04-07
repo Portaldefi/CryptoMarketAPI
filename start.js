@@ -13,20 +13,32 @@ mongoose.connection
 });
 
 global.fetch = require('node-fetch')
-const cc = require('cryptocompare')
 
 const app = require('./app');
 var server = require("http").Server(app);
 
-var io = require('socket.io')();
-io.attach(server, {
-  pingInterval: 10000,
-  pingTimeout: 5000,
-  cookie: false
-});
-require("./ws.js")(io);
-exports.io = io;
 
 server.listen(process.env.PORT || 3000, () => {
     console.log(`Express is running on port ${server.address().port}`);
 });
+
+var apn = require('apn');
+var apnsoptions = {
+    token: {
+      key: "public/push/AuthKey_FM695U6F8J.p8",
+      keyId: "FM695U6F8J",
+      teamId: "HBPT8C8527"
+    },
+    production: false
+};
+
+const Queue = require('bull');
+const alertQueue = new Queue('queue', process.env.REDIS_URL)
+
+alertQueue.process(function (job, done) {
+    var apnProvider = new apn.Provider(apnsoptions);
+    Push.send_ios_notification(job.data.alert_token,job.data.alert_price,apnProvider);
+    console.log("sending message");
+    apnProvider.shutdown();
+});
+

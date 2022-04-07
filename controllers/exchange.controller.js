@@ -169,9 +169,9 @@ exports.asset_list = (req, res) => {
            }
        }
    });
-    ExchangeAsset.find({}).exec( function(err, doc) {   
-        res.status(200).json(doc);
-    });
+    // ExchangeAsset.find({}).exec( function(err, doc) {   
+    //     res.status(200).json(doc);
+    // });
 }
 
 exports.error_codes = (req, res) => {

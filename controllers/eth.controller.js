@@ -1,8 +1,6 @@
 const async = require('async')
 var asyncLoop = require('node-async-loop');
 
-let Ethplorer = require('ethplorer-js').Ethplorer;
-let api = new Ethplorer();
 
 
 exports.erc20_list = (req, res) => {

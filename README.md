@@ -345,8 +345,8 @@ Below are a list of APIs leverage in portal desktop app at various interfaces.
 + Parameters
     + dev_id - device id of the user (a unique id)
     + id - alert id (a unique id)
-    + coin - coin on which alert is set
-    + price (number) - alert price
+    + coin - coin on which alert is set (coin-id of coinpaprika)
+    + price (number in usd) - alert price
 + Response 200 (application/json)
 
            {  
