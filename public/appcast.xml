@@ -20,5 +20,11 @@
             <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
             <enclosure url="https://cryptomarket-api.herokuapp.com/Portal_Mac_1.05.dmg" sparkle:version="5" sparkle:shortVersionString="1.0" length="33569603" type="application/octet-stream"/>
         </item>
+        <item>
+            <title>1.6</title>
+            <pubDate>Thu, 07 Apr 2022 22:32:53 -0600</pubDate>
+            <sparkle:minimumSystemVersion>10.15</sparkle:minimumSystemVersion>
+            <enclosure url="https://cryptomarket-api.herokuapp.com/Portal_Mac_1.06.dmg" sparkle:version="6" sparkle:shortVersionString="1.0" length="34737391" type="application/octet-stream"/>
+        </item>
     </channel>
 </rss>
