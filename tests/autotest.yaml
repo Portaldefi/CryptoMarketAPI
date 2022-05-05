@@ -2,7 +2,7 @@
 serverAddr: http://localhost         # http:// is required
 serverPort:   3000
 requestCount: 200          # total number of requests for entire run
-interarrival: [ 10, 50 ]      # [ min, max ] time between requests in milliseconds
+interArrival: [ 0, 0 ]      # [ min, max ] time between requests in milliseconds
 
 # the following are arrays containing possible values for url query parameters
 # TODO: get these from the original source (database?), i.e. the same place the server gets them
