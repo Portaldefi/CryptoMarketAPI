@@ -8,13 +8,15 @@ require "faraday"
 require "json"
 require "pp"
 require "yaml"
+require "json-schema"
 
 $\ = "\n"                       # appended to output of all print() calls
 CONFIG_FILE = "autotest.yaml"   # default config file name
-CHARSET = ( "A".."Z" ).to_a + ( "a".."z" ).to_a + ( "0".."9" ).to_a + %w[ _ +  - ]   # for random URL's and query params
+CHARSET = ( "A".."Z" ).to_a + ( "a".."z" ).to_a + ( "0".."9" ).to_a + %w[ _ + - ]   # for random URL's and query params
 
 ########################################################################################################################
-# generate a random string of length "len" with characters taken from CHARSET
+# return a string of length "len" with characters taken randomly from CHARSET
+
 def randString( len )
    a = Array.new( len ) {
       CHARSET.sample
@@ -24,29 +26,31 @@ def randString( len )
 end
 
 #-----------------------------------------------------------------------------------------------------------------------
+# given array "a", return 10, 50, 90 percentiles along with sorted "a"
 
 def percentiles( a )
-   aSort = a.sort
    lenF  = a.length.to_f
    idx10 = ( 0.1 * lenF ).round - 1
    idx10 = 0 if idx10 < 0
    idx50 = ( 0.5 * lenF ).round - 1
    idx90 = ( 0.9 * lenF ).round - 1
-   [ aSort[ idx10 ], aSort[ idx50 ], aSort[ idx90 ], aSort ]
+   aSort = a.sort
+   [ aSort[ idx10 ], aSort[ idx50 ], aSort[ idx90 ], aSort ]   # returns [ nil, nil, nil, [ ] ] if a is empty
 end
 
 #-----------------------------------------------------------------------------------------------------------------------
+# given an array of valid query values, return either a randomly selected valid value or a random invalid value
 
-def genQuery( paramA )
-   if rand( 1..100 ) <= 70   # return valid query param 70% of the time; TODO: make this configurable?
+def genQuery( paramA )             # TODO: also return invalid flag
+   if rand( 1..100 ) <= 70         # return valid query param 70% of the time; TODO: make this configurable?
       paramA.sample
-   else                      # else return invalid query param
-      randString( rand( 1..8 ) )
+   else                            # else return invalid query param
+      randString( rand( 1..8 ) )   # TODO: make length configurable?
    end
 end
 
 ########################################################################################################################
-# state machine to model lifecycle of alerts
+# state machine to model lifecycle of alerts; used by alert endpoint lambdas
 class Alert
    #--------------------------------------------------------------------------------------------------------------------
    def initialize( )
@@ -77,38 +81,160 @@ config = YAML.load_file( CONFIG_FILE )      # this can throw an exception
 %w[ serverAddr serverPort requestCount interArrival symbols exchanges ].each { | param |
    raise( "config yaml must have #{ param } field" ) if ! config.has_key?( param )
 }
-
+# validate and process config fields
+config[ "log" ] = false if ! config.has_key?( "log" )   # logging disabled by default
 min, max = config[ "interArrival" ]
 raise( "interArrival minimum greater than maximum" ) if min > max
 min /= 1000.0   # interarrival times in yaml are in milliseconds; rand() (below) expects seconds
 max /= 1000.0
 
-alerts = [ ]              # stores currently active Alert instances used by the alert endpoint lambda below
+# contains json schemas used to validate response bodies of each named endpoint
+# these are separate so they're not re-created on each lambda activation and so they can be validated once at start
+schemas = {
 
-# the lambda's below return [ protocol, url, query, requestBody, expectedResponseBody, invalid ]
+   "/exchange/list" => {
+      type: "array",
+      items: {
+         type: "object",
+         properties: {
+            exchange: { type: "string" },
+            id:       { type: "string" },
+            icon:     { type: "string" },
+            keys:     { type: "string" }
+         },
+         required: %w[ exchange id icon keys ],
+         additionalProperties: false
+      }
+   },
+
+   "/exchange/pairs" => {
+      type: "array",
+      items: {
+         type: "object",
+         properties: {
+            exchange: {
+               type: "array",
+               items: {
+                  type: "object",
+                  properties: {
+                     id:     { type: "string"  },
+                     sym:    { type: "string"  },
+                     bVol:   { type: "number"  },
+                     qVol:   { type: "number"  },
+                     price:  { type: "number"  },   # does not appear in all responses
+                     active: { type: "boolean" }
+                  },
+                  required: %w[ id sym bVol qVol active ],
+                  additionalProperties: false
+               }
+            },
+            icon:   { type: "string" },
+            name:   { type: "string" },
+            base:   { type: "string" },
+            quote:  { type: "string" },
+            symbol: { type: "string" },
+            change: { type: "number" },
+            last:   { type: "number" },
+            id:     { type: "string" },
+            quote_icon: { type: "string" },
+            quote_name: { type: "string" }         },
+         required: %w[ exchange icon name base quote quote_icon quote_name symbol change last id ],
+         additionalProperties: false
+      }
+   },
+
+   "/exchange/top_coin" => {
+      type: "array",
+      items: {
+         type: "object",
+         properties: {
+            change: { type: "number" },
+            icon:   { type: "string" },
+            last:   { type: "number" },
+            name:   { type: "string" }
+         },
+         required: %w[ change icon last name ],
+         additionalProperties: false
+      }
+   },
+
+   "/exchange/error_codes" => {
+      type: "object",
+      patternProperties: {
+         ".+": {          # accept a non-empty string containing any characters
+            type: "array",
+            items: {
+               type: "object",
+               properties: {
+                  code: { type: "string" },
+                  msg:  { type: "string" }
+               },
+               required: %w[ code msg ],
+               additionalProperties: false
+            }
+         }
+      }
+   },
+
+   "/exchange/kraken_withdraw_fees" => {
+      type: "array",
+      items: {
+         type: "object",
+         properties: {
+            CurrencyLong: { type: "string"  },
+            Currency:     { type: "string"  },
+            TxFee:        { type: "number"  },
+            CoinType:     { type: "string"  },
+            IsActive:     { type: "boolean" },
+            IsRestricted: { type: "boolean" },
+            BaseAddress:  { type: "string"  },
+            MinConfirmation: { type: "number" }
+         },
+         required: %w[ CurrencyLong Currency TxFee CoinType MinConfirmation IsActive IsRestricted BaseAddress ],
+         additionalProperties: false
+      }
+   },
+
+   "invalid" => {       # on invalid accesses server returns html, not json
+      type: "object",
+      properties: {
+         status: { type: "string" },
+         msg:    { type: "string" }
+      },
+      required: %w[ status msg ],
+      additionalProperties: false
+   }
+}
+
+# validate all json schemas
+metaSchema = JSON::Validator.validator_for_name( "draft4" ).metaschema
+
+schemas.each { | endpoint, schema |
+   print( "invalid schema for '#{ endpoint }'" ) if ! JSON::Validator.validate( metaSchema, schema )
+}
+
+alerts = [ ]    # stores currently active Alert instances used by the alert endpoint lambda below
+
+# the lambda's below return [ protocol, url, query, requestBody, invalid ]
 # protocol is one of: :get, :put, :post, :delete, :ws (websocket)
-# query string appended to url string; requestBody not used for GET
-# invalid is true or false and indicates validity of url (not query params)
-# lambda's can access config parameters via the "config" variable defined above
+# query string should be appended to url string; requestBody not used for GET
+# invalid is boolean that indicates validity of url (not query params)
+# TODO: need to indicate case of valid url and invalid queries so invalid response schema is used
+# if necessary lambda's can access config parameters via the "config" variable defined above
 endpoints = [
-	# ->{ request  = "request"
-	#     response = "response"
-   #     id       = "id"
-   #     devId    = "devId"
-   #     price    = "price"
-	#     [ :get, "/create_alert?#{ id }&#{ devId }&#{ price }", request, response ] },   # ?id,dev_id,coin,price
+	# ->{ id    = "id"
+   #     devId = "devId"
+   #     price = "price"
+	#     [ :get, "/create_alert", "?#{ id }&#{ devId }&#{ price }", nil, false ] },
+
+	# ->{ id = "id"
+	#     [ :get, "/delete_alert", "?#{ id }", nil, false ] },
 
 	# ->{ request  = "request"
-	#     response = "response"
-   #     id       = "id"
-	#     [ :get, "/delete_alert?#{ id }", request, response ] },   # ?id
-
-	# ->{ request  = "request"
-	#     response = "response"
    #     devId    = "devId"
    #     token    = "token"
    #     platform = "platform"
-	#     [ :get, "/register_user?#{ devId }&#{ token }&#{ platform }", request, response ] }    # ?dev_id,token,platform
+	#     [ :get, "/register_user?#{ devId }&#{ token }&#{ platform }", request, response ] }
 
    # ->{ if rand() > alerts.length   # this condition could be causing execution of else when array is empty
    #    # probability of new alerts decreases with number of existing alerts
@@ -122,51 +248,37 @@ endpoints = [
    #     end   # also need ability to return random endpoint not following state machine
 
    #     request  = "request"
-   #     response = "response"
-      #  [ :get, url, request, response ] },
+   #  [ :get, url, nil, false ] },
 
-   ->{ response = "response"   # TODO: consider verifying response json with json-schema (or equivalent)
-       [ :get, "/exchange/list", "", nil, response, false ] },
+   ->{ exchange = genQuery( config[ "exchanges" ] )   # TODO: also check comma-separated list
+       [ :get, "/exchange/pairs", "?ex=#{ exchange }", nil, false ] },
 
-   ->{ response = "response"
-       exchange = genQuery( config[ "exchanges" ] )   # TODO: also check comma-separated list
-       [ :get, "/exchange/pairs", "?ex=#{ exchange }", nil, response, false ] },
+   # ->{ symbol   = genQuery( config[ "symbols"   ] )   # TODO: returns 404; controller exists but is not connected to an endpoint
+   #     exchange = genQuery( config[ "exchanges" ] )
+   #     [ :get, "/exchange/ticker", "?ex=#{ exchange }&sym=#{ symbol }", nil, false ] },
 
-   ->{ response = "response"
-       symbol   = genQuery( config[ "symbols"   ] )
-       exchange = genQuery( config[ "exchanges" ] )
-       [ :get, "/exchange/ticker", "?ex=#{ exchange }&sym=#{ symbol }", nil, response, false ] },
+   ->{ [ :get, "/exchange/list",                 "", nil, false ] },
+   ->{ [ :get, "/exchange/top_coin",             "", nil, false ] },
+   ->{ [ :get, "/exchange/error_codes",          "", nil, false ] },
+   ->{ [ :get, "/exchange/kraken_withdraw_fees", "", nil, false ] },
 
-   ->{ response = "response"
-       [ :get, "/exchange/top_coin", "", nil, response, false ] },
-
-   ->{ response = "response"
-       [ :get, "/exchange/error_codes", "", nil, response, false ] },
-
-   ->{ response = "response"
-       [ :get, "/exchange/kraken_withdraw_fees", "", nil, response, false ] },
-
-   ->{ method = %i[ get put post delete ].sample    # generate an invalid access
-
-       url = ""
-       rand( 1..3 ).times {   # never generates "/" nor queries; TODO: make number of url components configurable?
-          url << "/" + randString( rand( 1..8 ) )   # TODO: make character count range configurable?
-       }
-
-       request  = randString( rand( 0..100 ) )      # random request body; not needed for get or delete
-       response = "error"                           # TODO: regex or json schema to match error response
-       [ method, url, "", request, response, true ] }
+   # ->{ method = %i[ get put post delete ].sample    # generate an invalid access; server returns html, not json
+   #     url = ""
+   #     rand( 1..3 ).times {   # never generates "/" nor queries; TODO: make number of url components configurable?
+   #        url << "/" + randString( rand( 1..8 ) )   # TODO: make character count range configurable?
+   #     }
+   #     request  = randString( rand( 0..100 ) )      # random request body; not needed for get or delete
+   #     [ method, url, "", request, true ] }
 ]
 
 #-----------------------------------------------------------------------------------------------------------------------
 # TODO: faraday does not support websockets
 urlBase = "%s:%s" % [ config[ "serverAddr" ], config[ "serverPort" ] ]
-http = Faraday.new( urlBase )                    # returns Faraday::Connection instance
+#http = Faraday.new( urlBase )                    # returns Faraday::Connection instance
 
-# use the following to enable logging
-# http = Faraday.new( urlBase ) { | f |
-#    f.response( :logger, nil, { headers: true, bodies: true, log_level: :debug } )
-# }
+http = Faraday.new( urlBase ) { | f |
+   f.response( :logger, nil, { headers: true, bodies: true, log_level: :debug } ) if config[ "log" ] == true
+}
 
 # latencies for each method x url (not including query string); [method][url] => [ latencyOfEachAccess+ ]
 latencies = Hash.new { | h, key |
@@ -176,43 +288,31 @@ latencies = Hash.new { | h, key |
 }
 
 1.upto( config[ "requestCount" ] ) {
-   protocol, url, query, req, expectedResp, invalid = endpoints.sample.call   # call random lambda from endpoint array
+   protocol, endpoint, query, req, invalid = endpoints.sample.call   # call random lambda from endpoint array
+   url = endpoint + query
    response = nil                                # make this variable visible outside the Benchmark blocks below
-   #printf( "\n%s\n%s %s\n", "-" * 40, protocol, url + query )
 
    time = case protocol
       when :get
-         Benchmark.measure {                     # returns Benchmark::Tms instance
-            response = http.get( url + query )   # returns Faraday::Response instance
-         }
-         .total                                  # returns system + user time in seconds as Float
-      when :put
-         Benchmark.measure {
-            response = http.put( url + query, req )
-         }
-         .total
-      when :post
-         Benchmark.measure {
-            response = http.post( url + query, req )
-         }
-         .total
-      when :delete
-         Benchmark.measure {
-            response = http.delete( url + query )
-         }
-         .total
-      when :ws
-         raise( "websockets not implemented" )
-      else
-         raise( "invalid protocol: #{ protocol }" )
+         Benchmark.measure {             # returns Benchmark::Tms instance
+            response = http.get( url )   # returns Faraday::Response instance
+         }.total                         # from Benchmark::Tms instance, returns system + user time in seconds as Float
+      when :put    then Benchmark.measure {  response = http.put( url, req )   }.total
+      when :post   then Benchmark.measure {  response = http.post( url, req )  }.total
+      when :delete then Benchmark.measure {  response = http.delete( url )     }.total
+      when :ws     then raise( "websockets not implemented" )
+      else raise( "invalid protocol: #{ protocol }" )
    end
 
-   url = "invalid" if invalid
-   latencies[ protocol ][ url ] << time * 1000.0   # convert time to milliseconds
+   endpoint = "invalid" if invalid       # group latencies for all invalid endpoints into a single bin
+   latencies[ protocol ][ endpoint ] << 1000.0 * time                           # convert time to milliseconds
+   chk = JSON::Validator.fully_validate( schemas[ endpoint ], response.body )   # returns an array of errors
 
-   # if response != expectedResp   # TODO: use json schema to validate response body?
-   #    # received response did not match expected response
-   # end
+   if ! chk.empty?
+      print( "\nresponse to #{ url } did not match schema" )
+      pp( chk )
+      print( "\n" )
+   end
 
    sleep( rand( min..max ) )   # interarrival time
 }
@@ -222,7 +322,7 @@ allA = [ ]
 
 latencies.each { | method, endpointH |
    printf( "\n%s\n%s\n", "-" * 80, method )
-   printf( "%32s  %8s  %8s  %8s  %8s\n", "endpoint", "count", "10% tile", "median", "90% tile" )
+   printf( "%32s  %8s  %8s  %8s  %8s\n", "endpoint", "count", "10%tile", "median", "90%tile" )
    allMethodA = [ ]
 
    endpointH.each { | url, latencyA |

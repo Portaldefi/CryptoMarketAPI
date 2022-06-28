@@ -1,10 +1,11 @@
 
-serverAddr: http://localhost         # http:// is required
+serverAddr: http://localhost   # http:// is required
 serverPort:   3000
-requestCount: 200          # total number of requests for entire run
-interArrival: [ 0, 0 ]      # [ min, max ] time between requests in milliseconds
+requestCount: 10          # total number of requests for entire run
+interArrival: [ 0, 0 ]     # [ min, max ] time between requests in milliseconds
+#log: true                 # logging disabled by default
 
-# the following are arrays containing possible values for url query parameters
+# the following are arrays containing all possible valid values for url query parameters
 # TODO: get these from the original source (database?), i.e. the same place the server gets them
 exchanges: [ binance, coinbasepro, kraken ]
 
