@@ -32,7 +32,6 @@ exports.pairs = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     
     if (isEmpty(req.query)) {
-        console.log("jack")
         return res.status(400).send({
             message: "Parameters can not be empty"
         });

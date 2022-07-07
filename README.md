@@ -353,6 +353,19 @@ Below are a list of APIs leverage in portal desktop app at various interfaces.
               "message":"Successfully created",
            }
 
+## Create a mock alerts API [/mock_notifier{?id,dev_id,,coin,price}]
+### Create mock alert [GET]
++ Parameters
+    + dev_id - device id of the user (a unique id)
+    + id - alert id (a unique id)
+    + coin - coin on which alert is set (coin-id of coinpaprika)
+    + price (number in usd) - alert price
++ Response 200 (application/json)
+
+           {  
+              "message":"Successfully created",
+           }
+
 
 ## Delete a price alerts API [/delete_alert{?id}]
 ### Delete alert [GET]

@@ -22,6 +22,7 @@ const alert = require('./controllers/alert.controller.js');
 app.get('/create_alert', alert.create);
 app.get('/delete_alert', alert.delete);
 app.get('/register_user', alert.register_user);
+app.get('/mock_notifier', alert.mock_notifier);
 
 
 // Exchange API

@@ -1,5 +1,9 @@
 const Alert = require('../models/Alert.js');
 var User = require('../models/User');
+let Queue = require("bull");
+let REDIS_URL = process.env.REDIS_URL;
+
+let alertQueue = new Queue('queue', REDIS_URL);
 
 exports.create = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -47,4 +51,14 @@ exports.register_user = (req, res) => {
             message: 'Successfully created'
         });
     });
+}
+
+exports.mock_notifier = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    var device_id = req.query.dev_id;
+    var coin = req.query.coin;
+    var price = req.query.price;
+    var id = req.query.id;
+   
+    alertQueue.add({ alert_token:device_id, alert_price:0});
 }
